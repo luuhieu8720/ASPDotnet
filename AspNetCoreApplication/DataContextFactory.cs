@@ -15,7 +15,7 @@ namespace AspNetCoreApplication
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
-            var sqlConnection = configuration.GetValue<string>("DbConfig:Connection");
+            var sqlConnection = configuration.GetValue<string>("ConnectionStrings:Connection");
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
 
             optionsBuilder.UseSqlServer(sqlConnection);
