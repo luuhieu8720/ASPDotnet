@@ -66,5 +66,21 @@ namespace AspNetCoreApplication.Controller
 
             return NotFound();
         }
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id, [FromBody] AuthorCreate authorCreate)
+        {
+            var author = await dataContext.Authors.FindAsync(id);
+
+            if (author == null)
+                return NotFound();
+
+            author.Name = authorCreate.Name;
+            author.Cover = authorCreate.Cover;
+            author.Birthday = authorCreate.Birthday;
+            author.Website = authorCreate.Website;
+            await dataContext.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
