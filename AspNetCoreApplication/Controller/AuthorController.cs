@@ -1,4 +1,5 @@
 ﻿using AspNetCoreApplication.DTO.Author;
+using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,18 +36,17 @@ namespace AspNetCoreApplication.Controller
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AuthorDetail>> Get(int id)
+        public async Task<AuthorDetail> Get(int id)
         {
-            if(await dataContext.Authors.Where(author => author.Id == id).FirstOrDefaultAsync() is { } author)
-            {
-                return Ok(new AuthorDetail() { 
-                    Name = author.Name,
-                    Cover = author.Cover,
-                    Birthday = author.Birthday,
-                    Website = author.Website
-                });
-            }
-            return NotFound();
+            var author = await dataContext.Authors.FindAsync(id) ??
+                         throw new NotFoundException("Author can't be found");
+
+            return new AuthorDetail() { 
+                Name = author.Name,
+                Cover = author.Cover,
+                Birthday = author.Birthday,
+                Website = author.Website
+            };
         }
         [HttpPost]
         public async Task Add([FromBody] AuthorCreate authorCreate)
@@ -65,32 +65,26 @@ namespace AspNetCoreApplication.Controller
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task Delete(int id)
         {
-            if (await dataContext.Authors.Where(author => author.Id == id).FirstOrDefaultAsync() is { } author)
-            {
-                dataContext.Authors.Remove(author);
-                await dataContext.SaveChangesAsync();
-                return Ok();
-            }
+            var author = await dataContext.Authors.FindAsync(id) ??
+                         throw new NotFoundException("Author can't be found");
 
-            return NotFound();
+            dataContext.Remove(author);
+            await dataContext.SaveChangesAsync();
+
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, [FromBody] AuthorCreate authorCreate)
+        public async Task Put(int id, [FromBody] AuthorCreate authorCreate)
         {
-            var author = await dataContext.Authors.FindAsync(id);
-
-            if (author == null)
-                return NotFound();
+            var author = await dataContext.Authors.FindAsync(id) ??
+                         throw new NotFoundException("Author can't be found");
 
             author.Name = authorCreate.Name;
             author.Cover = authorCreate.Cover;
             author.Birthday = authorCreate.Birthday;
             author.Website = authorCreate.Website;
             await dataContext.SaveChangesAsync();
-
-            return Ok();
         }
     }
 }
