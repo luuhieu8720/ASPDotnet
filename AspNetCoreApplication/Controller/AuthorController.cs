@@ -22,21 +22,31 @@ namespace AspNetCoreApplication.Controller
         }
 
         [HttpGet]
-        public async Task<List<Author>> Get()
+        public async Task<List<AuthorItem>> Get()
         {
-            return await dataContext.Authors.ToListAsync();
+            var authors = await dataContext.Authors.ToListAsync();
+            return authors.Select(x => new AuthorItem()
+            {
+                Name = x.Name,
+                Birthday = x.Birthday,
+                Cover = x.Cover,
+                Website = x.Website
+            }).ToList();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> Get(int id)
+        public async Task<ActionResult<AuthorDetail>> Get(int id)
         {
             if(await dataContext.Authors.Where(author => author.Id == id).FirstOrDefaultAsync() is { } author)
             {
-                return Ok(author);
+                return Ok(new AuthorDetail() { 
+                    Name = author.Name,
+                    Cover = author.Cover,
+                    Birthday = author.Birthday,
+                    Website = author.Website
+                });
             }
-
             return NotFound();
-   
         }
         [HttpPost]
         public async Task Add([FromBody] AuthorCreate authorCreate)
