@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Stage1\" />
     <Folder Include="Resources\Images\" />
   </ItemGroup>
 
