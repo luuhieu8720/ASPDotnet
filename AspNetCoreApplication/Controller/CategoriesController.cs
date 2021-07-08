@@ -37,7 +37,6 @@ namespace AspNetCoreApplication.Controller
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryDetail>> Get(int id)
         {
-            var categoryDetail = new CategoryDetail();
             if (await dataContext.Categories.Where(x => x.Id == id).FirstOrDefaultAsync() is { } category)
             {
                 return Ok(new CategoryDetail()
