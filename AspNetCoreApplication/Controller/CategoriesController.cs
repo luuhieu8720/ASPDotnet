@@ -39,7 +39,7 @@ namespace AspNetCoreApplication.Controller
         public async Task<CategoryDetail> Get(int id)
         {
             var category = await dataContext.Categories.FindAsync(id) ??
-            throw new NotFoundException("Category can't be found");
+                           throw new NotFoundException("Category can't be found");
 
             return new CategoryDetail()
             {
@@ -63,7 +63,7 @@ namespace AspNetCoreApplication.Controller
         public async Task Delete(int id)
         {
             var category = await dataContext.Categories.FindAsync(id) ??
-            throw new NotFoundException("Category can't be found");
+                           throw new NotFoundException("Category can't be found");
 
             dataContext.Remove(category);
 

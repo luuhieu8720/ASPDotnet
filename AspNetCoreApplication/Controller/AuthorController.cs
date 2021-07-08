@@ -39,7 +39,7 @@ namespace AspNetCoreApplication.Controller
         public async Task<AuthorDetail> Get(int id)
         {
             var author = await dataContext.Authors.FindAsync(id) ??
-            throw new NotFoundException("Author can't be found");
+                         throw new NotFoundException("Author can't be found");
 
             return new AuthorDetail() { 
                 Name = author.Name,
@@ -68,7 +68,7 @@ namespace AspNetCoreApplication.Controller
         public async Task Delete(int id)
         {
             var author = await dataContext.Authors.FindAsync(id) ??
-            throw new NotFoundException("Author can't be found");
+                         throw new NotFoundException("Author can't be found");
 
             dataContext.Remove(author);
             await dataContext.SaveChangesAsync();
