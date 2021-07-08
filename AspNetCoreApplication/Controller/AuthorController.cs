@@ -38,7 +38,7 @@ namespace AspNetCoreApplication.Controller
         [HttpGet("{id}")]
         public async Task<AuthorDetail> Get(int id)
         {
-            if(await dataContext.Authors.Where(author => author.Id == id).FirstOrDefaultAsync() is { } author)
+            if (await dataContext.Authors.Where(author => author.Id == id).FirstOrDefaultAsync() is { } author)
             {
                 return new AuthorDetail() { 
                     Name = author.Name,
@@ -79,10 +79,8 @@ namespace AspNetCoreApplication.Controller
         [HttpPut("{id}")]
         public async Task Put(int id, [FromBody] AuthorCreate authorCreate)
         {
-            var author = await dataContext.Authors.FindAsync(id);
-
-            if (author == null)
-                throw new NotFoundException("Author can't be found");
+            var author = await dataContext.Authors.FindAsync(id) ??
+                         throw new NotFoundException("Author can't be found");
 
             author.Name = authorCreate.Name;
             author.Cover = authorCreate.Cover;

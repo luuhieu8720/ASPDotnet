@@ -76,9 +76,7 @@ namespace AspNetCoreApplication.Controller
         [HttpPut("{id}")]
         public async Task Put(int id, [FromBody] CategoryForm categoryCreate)
         {
-            var category = await dataContext.Categories.FindAsync(id);
-
-            if (category == null)
+            var category = await dataContext.Categories.FindAsync(id) ??
                 throw new NotFoundException("Category can't be found");
 
             category.Name = categoryCreate.Name;
