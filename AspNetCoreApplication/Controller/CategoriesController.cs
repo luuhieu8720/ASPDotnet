@@ -1,5 +1,6 @@
 ﻿using AspNetCoreApplication.DTO.Category;
 using AspNetCoreApplication.DTOcategory;
+using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,18 +36,18 @@ namespace AspNetCoreApplication.Controller
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoryDetail>> Get(int id)
+        public async Task<CategoryDetail> Get(int id)
         {
             if (await dataContext.Categories.Where(x => x.Id == id).FirstOrDefaultAsync() is { } category)
             {
-                return Ok(new CategoryDetail()
+                return new CategoryDetail()
                 {
                     Id = category.Id,
                     Name = category.Name,
                     Description = category.Description
-                });
+                };
             }
-            return NotFound();
+            throw new NotFoundException("Category can't be found");
         }
         [HttpPost]
         public async Task Add([FromBody] CategoryForm categoryForm)
@@ -60,29 +61,29 @@ namespace AspNetCoreApplication.Controller
             await dataContext.SaveChangesAsync();
         }
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task Delete(int id)
         {
             if (await dataContext.Categories.Where(category => category.Id == id).FirstOrDefaultAsync() is { } category)
             {
                 dataContext.Categories.Remove(category);
                 await dataContext.SaveChangesAsync();
-                return Ok();
             }
-            return NotFound();
+            else
+            {
+                throw new NotFoundException("Category can't be found");
+            }
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, [FromBody] CategoryForm categoryCreate)
+        public async Task Put(int id, [FromBody] CategoryForm categoryCreate)
         {
             var category = await dataContext.Categories.FindAsync(id);
 
             if (category == null)
-                return NotFound();
+                throw new NotFoundException("Category can't be found");
 
             category.Name = categoryCreate.Name;
             category.Description = categoryCreate.Description;
             await dataContext.SaveChangesAsync();
-
-            return Ok();
         }
     }
 }

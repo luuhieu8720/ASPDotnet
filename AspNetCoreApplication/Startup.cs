@@ -1,3 +1,4 @@
+using AspNetCoreApplication.Handlings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,7 @@ namespace AspNetCoreApplication
                 options => options.UseSqlServer("name=ConnectionStrings:Connection")
             );
             services.AddControllers();
+            services.AddMvc(x => x.Filters.Add<HandleExceptionHandling>());
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AspNetCoreApplication", Version = "v1" });
@@ -50,6 +52,7 @@ namespace AspNetCoreApplication
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            
 
             app.UseAuthorization();
 
