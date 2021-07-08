@@ -38,16 +38,15 @@ namespace AspNetCoreApplication.Controller
         [HttpGet("{id}")]
         public async Task<CategoryDetail> Get(int id)
         {
-            if (await dataContext.Categories.Where(x => x.Id == id).FirstOrDefaultAsync() is { } category)
-            {
-                return new CategoryDetail()
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Description = category.Description
-                };
-            }
+            var category = await dataContext.Categories.FindAsync(id) ??
             throw new NotFoundException("Category can't be found");
+
+            return new CategoryDetail()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description
+            };
         }
         [HttpPost]
         public async Task Add([FromBody] CategoryForm categoryForm)
@@ -63,21 +62,18 @@ namespace AspNetCoreApplication.Controller
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
-            if (await dataContext.Categories.Where(category => category.Id == id).FirstOrDefaultAsync() is { } category)
-            {
-                dataContext.Categories.Remove(category);
-                await dataContext.SaveChangesAsync();
-            }
-            else
-            {
-                throw new NotFoundException("Category can't be found");
-            }
+            var category = await dataContext.Categories.FindAsync(id) ??
+            throw new NotFoundException("Category can't be found");
+
+            dataContext.Remove(category);
+
+            await dataContext.SaveChangesAsync();
         }
         [HttpPut("{id}")]
         public async Task Put(int id, [FromBody] CategoryForm categoryCreate)
         {
             var category = await dataContext.Categories.FindAsync(id) ??
-                throw new NotFoundException("Category can't be found");
+                           throw new NotFoundException("Category can't be found");
 
             category.Name = categoryCreate.Name;
             category.Description = categoryCreate.Description;

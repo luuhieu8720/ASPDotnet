@@ -38,16 +38,15 @@ namespace AspNetCoreApplication.Controller
         [HttpGet("{id}")]
         public async Task<AuthorDetail> Get(int id)
         {
-            if (await dataContext.Authors.Where(author => author.Id == id).FirstOrDefaultAsync() is { } author)
-            {
-                return new AuthorDetail() { 
-                    Name = author.Name,
-                    Cover = author.Cover,
-                    Birthday = author.Birthday,
-                    Website = author.Website
-                };
-            }
+            var author = await dataContext.Authors.FindAsync(id) ??
             throw new NotFoundException("Author can't be found");
+
+            return new AuthorDetail() { 
+                Name = author.Name,
+                Cover = author.Cover,
+                Birthday = author.Birthday,
+                Website = author.Website
+            };
         }
         [HttpPost]
         public async Task Add([FromBody] AuthorCreate authorCreate)
@@ -68,13 +67,12 @@ namespace AspNetCoreApplication.Controller
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
-            if (await dataContext.Authors.Where(author => author.Id == id).FirstOrDefaultAsync() is { } author)
-            {
-                dataContext.Authors.Remove(author);
-                await dataContext.SaveChangesAsync();
-            }
-
+            var author = await dataContext.Authors.FindAsync(id) ??
             throw new NotFoundException("Author can't be found");
+
+            dataContext.Remove(author);
+            await dataContext.SaveChangesAsync();
+
         }
         [HttpPut("{id}")]
         public async Task Put(int id, [FromBody] AuthorCreate authorCreate)
