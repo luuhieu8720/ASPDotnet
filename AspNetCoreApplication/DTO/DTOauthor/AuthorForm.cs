@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AspNetCoreApplication.DTO.Author
+namespace AspNetCoreApplication.DTO.DTOauthor
 {
-    public class AuthorCreate
+    public class AuthorForm
     {
         public string Name { get; set; }
         public string Website { get; set; }

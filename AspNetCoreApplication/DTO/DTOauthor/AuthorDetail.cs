@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AspNetCoreApplication.DTO.Author
+namespace AspNetCoreApplication.DTO.DTOauthor
 {
     public class AuthorDetail
     {
