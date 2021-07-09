@@ -1,5 +1,4 @@
-﻿using AspNetCoreApplication.DTO.Category;
-using AspNetCoreApplication.DTOcategory;
+﻿using AspNetCoreApplication.DTO.DTOcategory;
 using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
@@ -62,10 +61,10 @@ namespace AspNetCoreApplication.Controller
         public async Task Put(int id, [FromBody] CategoryForm categoryForm)
         {
             var category = await dataContext.Categories.FindAsync(id) ??
-                           throw new NotFoundException("Category can't be found");
+                             throw new NotFoundException("User can't be found");
 
-            category = categoryForm.MapTo<Category>();
-
+            categoryForm.Copy(category);
+            dataContext.Categories.Attach(category);
             dataContext.Entry(category).State = EntityState.Modified;
 
             await dataContext.SaveChangesAsync();

@@ -62,9 +62,10 @@ namespace AspNetCoreApplication.Controller
         public async Task Put(int id, [FromBody] AuthorForm authorForm)
         {
             var author = await dataContext.Authors.FindAsync(id) ??
-                         throw new NotFoundException("Author can't be found");
-            
-            author = authorForm.MapTo<Author>();
+                             throw new NotFoundException("User can't be found");
+
+            authorForm.Copy(author);
+            dataContext.Authors.Attach(author);
             dataContext.Entry(author).State = EntityState.Modified;
 
             await dataContext.SaveChangesAsync();
