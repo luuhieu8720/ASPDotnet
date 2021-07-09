@@ -1,5 +1,6 @@
 ﻿using AspNetCoreApplication.DTO.Author;
 using AspNetCoreApplication.Exceptions;
+using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,13 +27,7 @@ namespace AspNetCoreApplication.Controller
         public async Task<List<AuthorItem>> Get()
         {
             var authors = await dataContext.Authors.ToListAsync();
-            return authors.Select(x => new AuthorItem()
-            {
-                Name = x.Name,
-                Birthday = x.Birthday,
-                Cover = x.Cover,
-                Website = x.Website
-            }).ToList();
+            return authors.Select(x => x.MapTo<AuthorItem>()).ToList();
         }
 
         [HttpGet("{id}")]
@@ -41,23 +36,12 @@ namespace AspNetCoreApplication.Controller
             var author = await dataContext.Authors.FindAsync(id) ??
                          throw new NotFoundException("Author can't be found");
 
-            return new AuthorDetail() { 
-                Name = author.Name,
-                Cover = author.Cover,
-                Birthday = author.Birthday,
-                Website = author.Website
-            };
+            return author.MapTo<AuthorDetail>();
         }
         [HttpPost]
-        public async Task Add([FromBody] AuthorCreate authorCreate)
+        public async Task Add([FromBody] AuthorForm authorForm)
         {
-            var author = new Author
-            {
-                Name = authorCreate.Name,
-                Website = authorCreate.Website,
-                Cover = authorCreate.Cover,
-                Birthday = authorCreate.Birthday
-            };
+            var author = authorForm.MapTo<Author>();
 
             dataContext.Authors.Add(author);
 
@@ -75,15 +59,14 @@ namespace AspNetCoreApplication.Controller
 
         }
         [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] AuthorCreate authorCreate)
+        public async Task Put(int id, [FromBody] AuthorForm authorForm)
         {
             var author = await dataContext.Authors.FindAsync(id) ??
                          throw new NotFoundException("Author can't be found");
+            
+            author = authorForm.MapTo<Author>();
+            dataContext.Entry(author).State = EntityState.Modified;
 
-            author.Name = authorCreate.Name;
-            author.Cover = authorCreate.Cover;
-            author.Birthday = authorCreate.Birthday;
-            author.Website = authorCreate.Website;
             await dataContext.SaveChangesAsync();
         }
     }
