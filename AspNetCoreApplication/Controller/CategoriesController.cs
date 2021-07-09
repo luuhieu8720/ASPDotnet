@@ -1,6 +1,7 @@
 ﻿using AspNetCoreApplication.DTO.Category;
 using AspNetCoreApplication.DTOcategory;
 using AspNetCoreApplication.Exceptions;
+using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,12 +28,7 @@ namespace AspNetCoreApplication.Controller
         {
             var categories = await dataContext.Categories.ToListAsync();
 
-            return categories.Select(x => new CategoryItem()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Description = x.Description
-            }).ToList();
+            return categories.Select(x => x.MapTo<CategoryItem>()).ToList();
         }
 
         [HttpGet("{id}")]
@@ -41,22 +37,15 @@ namespace AspNetCoreApplication.Controller
             var category = await dataContext.Categories.FindAsync(id) ??
                            throw new NotFoundException("Category can't be found");
 
-            return new CategoryDetail()
-            {
-                Id = category.Id,
-                Name = category.Name,
-                Description = category.Description
-            };
+            return category.MapTo<CategoryDetail>();
         }
         [HttpPost]
         public async Task Add([FromBody] CategoryForm categoryForm)
         {
-            var category = new Category
-            {
-                Name = categoryForm.Name,
-                Description = categoryForm.Description
-            };
+            var category = categoryForm.MapTo<Category>();
+
             dataContext.Categories.Add(category);
+
             await dataContext.SaveChangesAsync();
         }
         [HttpDelete("{id}")]
@@ -70,13 +59,15 @@ namespace AspNetCoreApplication.Controller
             await dataContext.SaveChangesAsync();
         }
         [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] CategoryForm categoryCreate)
+        public async Task Put(int id, [FromBody] CategoryForm categoryForm)
         {
             var category = await dataContext.Categories.FindAsync(id) ??
                            throw new NotFoundException("Category can't be found");
 
-            category.Name = categoryCreate.Name;
-            category.Description = categoryCreate.Description;
+            category = categoryForm.MapTo<Category>();
+
+            dataContext.Entry(category).State = EntityState.Modified;
+
             await dataContext.SaveChangesAsync();
         }
     }

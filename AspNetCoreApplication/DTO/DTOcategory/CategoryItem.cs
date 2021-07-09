@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AspNetCoreApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AspNetCoreApplication.DTOcategory
+namespace AspNetCoreApplication.DTO.DTOcategory
 {
     public class CategoryItem
     {

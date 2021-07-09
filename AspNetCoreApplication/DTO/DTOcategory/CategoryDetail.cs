@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreApplication.Models;
 
-namespace AspNetCoreApplication.DTOcategory
+namespace AspNetCoreApplication.DTO.DTOcategory
 {
     public class CategoryDetail
     {
