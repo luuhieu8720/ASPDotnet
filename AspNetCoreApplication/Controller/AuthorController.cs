@@ -1,4 +1,4 @@
-﻿using AspNetCoreApplication.DTO.Author;
+﻿using AspNetCoreApplication.DTO.DTOauthor;
 using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
