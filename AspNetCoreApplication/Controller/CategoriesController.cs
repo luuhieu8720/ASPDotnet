@@ -27,7 +27,7 @@ namespace AspNetCoreApplication.Controller
         {
             var categories = await dataContext.Categories.ToListAsync();
 
-            return categories.Select(x => x.MapTo<CategoryItem>()).ToList();
+            return categories.Select(x => x.ConvertTo<CategoryItem>()).ToList();
         }
 
         [HttpGet("{id}")]
@@ -36,12 +36,12 @@ namespace AspNetCoreApplication.Controller
             var category = await dataContext.Categories.FindAsync(id) ??
                            throw new NotFoundException("Category can't be found");
 
-            return category.MapTo<CategoryDetail>();
+            return category.ConvertTo<CategoryDetail>();
         }
         [HttpPost]
         public async Task Add([FromBody] CategoryForm categoryForm)
         {
-            var category = categoryForm.MapTo<Category>();
+            var category = categoryForm.ConvertTo<Category>();
 
             dataContext.Categories.Add(category);
 
