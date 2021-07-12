@@ -26,7 +26,7 @@ namespace AspNetCoreApplication.Controller
         public async Task<List<BookItem>> Get()
         {
             var books = await dataContext.Books.ToListAsync();
-            return books.Select(x => x.MapTo<BookItem>()).ToList();
+            return books.Select(x => x.ConvertTo<BookItem>()).ToList();
         }
         [HttpGet("{id}")]
         public async Task<BookDetail> Get(int id)
@@ -34,14 +34,14 @@ namespace AspNetCoreApplication.Controller
             var book = await dataContext.Books.FindAsync(id) ??
                            throw new NotFoundException("Book can't be found");
 
-            return book.MapTo<BookDetail>();
+            return book.ConvertTo<BookDetail>();
         }
         [HttpPost]
         public async Task Add([FromBody] BookForm bookForm)
         {
-            var book = bookForm.MapTo<Book>();
+            var book = bookForm.ConvertTo<Book>();
 
-            dataContext.Books.Add(book);
+            await dataContext.Books.AddAsync(book);
 
             await dataContext.SaveChangesAsync();
         }
@@ -61,8 +61,7 @@ namespace AspNetCoreApplication.Controller
             var book = await dataContext.Books.FindAsync(id) ??
                              throw new NotFoundException("User can't be found");
 
-            bookForm.Copy(book);
-            dataContext.Books.Attach(book);
+            bookForm.CopyTo(book);
             dataContext.Entry(book).State = EntityState.Modified;
 
             await dataContext.SaveChangesAsync();

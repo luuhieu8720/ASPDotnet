@@ -27,7 +27,7 @@ namespace AspNetCoreApplication.Controller
         public async Task<List<AuthorItem>> Get()
         {
             var authors = await dataContext.Authors.ToListAsync();
-            return authors.Select(x => x.MapTo<AuthorItem>()).ToList();
+            return authors.Select(x => x.ConvertTo<AuthorItem>()).ToList();
         }
 
         [HttpGet("{id}")]
@@ -36,12 +36,12 @@ namespace AspNetCoreApplication.Controller
             var author = await dataContext.Authors.FindAsync(id) ??
                          throw new NotFoundException("Author can't be found");
 
-            return author.MapTo<AuthorDetail>();
+            return author.ConvertTo<AuthorDetail>();
         }
         [HttpPost]
         public async Task Add([FromBody] AuthorForm authorForm)
         {
-            var author = authorForm.MapTo<Author>();
+            var author = authorForm.ConvertTo<Author>();
 
             dataContext.Authors.Add(author);
 
@@ -62,9 +62,9 @@ namespace AspNetCoreApplication.Controller
         public async Task Put(int id, [FromBody] AuthorForm authorForm)
         {
             var author = await dataContext.Authors.FindAsync(id) ??
-                         throw new NotFoundException("Author can't be found");
-            
-            author = authorForm.MapTo<Author>();
+                             throw new NotFoundException("Author can't be found");
+
+            authorForm.CopyTo(author);
             dataContext.Entry(author).State = EntityState.Modified;
 
             await dataContext.SaveChangesAsync();
