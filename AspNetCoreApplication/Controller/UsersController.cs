@@ -25,7 +25,7 @@ namespace AspNetCoreApplication.Controller
         {
             var categories = await dataContext.Users.ToListAsync();
 
-            return categories.Select(x => x.MapTo<UserItem>()).ToList();
+            return categories.Select(x => x.ConvertTo<UserItem>()).ToList();
         }
         [HttpGet("{id}")]
         public async Task<UserDetail> Get(int id)
@@ -33,12 +33,12 @@ namespace AspNetCoreApplication.Controller
             var author = await dataContext.Users.FindAsync(id) ??
                          throw new NotFoundException("User can't be found");
 
-            return author.MapTo<UserDetail>();
+            return author.ConvertTo<UserDetail>();
         }
         [HttpPost]
         public async Task Add([FromBody] UserForm userForm)
         {
-            var user = userForm.MapTo<User>();
+            var user = userForm.ConvertTo<User>();
 
             dataContext.Users.Add(user);
 
@@ -59,8 +59,7 @@ namespace AspNetCoreApplication.Controller
             var user = await dataContext.Users.FindAsync(id) ??
                              throw new NotFoundException("User can't be found");
 
-            userForm.Copy(user);
-            dataContext.Users.Attach(user);
+            userForm.CopyTo(user);
             dataContext.Entry(user).State = EntityState.Modified;
 
             await dataContext.SaveChangesAsync();

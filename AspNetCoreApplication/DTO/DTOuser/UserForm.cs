@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.DTO.DTOuser
 {
-    [Serializable()]
     public class UserForm
     {
         public string Name { get; set; }
