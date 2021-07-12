@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AspNetCoreApplication.Repositories;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Models
 {
-    public class Book
+    public class Book : BaseModel
     {
         [Key]
         public int Id { get; set; }

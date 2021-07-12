@@ -2,6 +2,7 @@
 using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
+using AspNetCoreApplication.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,58 +17,37 @@ namespace AspNetCoreApplication.Controller
     [Route("api/authors")]
     public class AuthorController : ControllerBase
     {
-        private readonly DataContext dataContext;
-
-        public AuthorController(DataContext dataContext)
+        private readonly IRepository<Author> author;
+        public AuthorController(IRepository<Author> author)
         {
-            this.dataContext = dataContext;
+            this.author = author;
         }
-
         [HttpGet]
-        public async Task<List<AuthorItem>> Get()
+        public Task<List<AuthorItem>> Get()
         {
-            var authors = await dataContext.Authors.ToListAsync();
-            return authors.Select(x => x.ConvertTo<AuthorItem>()).ToList();
+            return author.Get<AuthorItem>();
         }
 
         [HttpGet("{id}")]
-        public async Task<AuthorDetail> Get(int id)
+        public Task<AuthorDetail> Get(int id)
         {
-            var author = await dataContext.Authors.FindAsync(id) ??
-                         throw new NotFoundException("Author can't be found");
-
-            return author.ConvertTo<AuthorDetail>();
+            return author.Get<AuthorDetail>(id);
         }
         [HttpPost]
-        public async Task Add([FromBody] AuthorForm authorForm)
+        public Task Add([FromBody] AuthorForm authorForm)
         {
-            var author = authorForm.ConvertTo<Author>();
-
-            dataContext.Authors.Add(author);
-
-            await dataContext.SaveChangesAsync();
+            return author.Add(authorForm.ConvertTo<Author>());
         }
 
         [HttpDelete("{id}")]
-        public async Task Delete(int id)
+        public Task Delete(int id)
         {
-            var author = await dataContext.Authors.FindAsync(id) ??
-                         throw new NotFoundException("Author can't be found");
-
-            dataContext.Remove(author);
-            await dataContext.SaveChangesAsync();
-
+            return author.Delete(id);
         }
         [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] AuthorForm authorForm)
+        public Task Put(int id, [FromBody] AuthorForm authorForm)
         {
-            var author = await dataContext.Authors.FindAsync(id) ??
-                             throw new NotFoundException("Author can't be found");
-
-            authorForm.CopyTo(author);
-            dataContext.Entry(author).State = EntityState.Modified;
-
-            await dataContext.SaveChangesAsync();
+            return author.Put(authorForm, id);
         }
     }
 }
