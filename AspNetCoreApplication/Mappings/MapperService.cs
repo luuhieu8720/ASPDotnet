@@ -50,7 +50,11 @@ namespace AspNetCoreApplication.Mappings
         {
             if (source == null)
             {
-                throw new NullReferenceException();
+                throw new NullReferenceException("Source can't be null");
+            }
+            if (destination == null)
+            {
+                throw new NullReferenceException("Destination can't be null");
             }
             mapper.Map(source, destination);
         }
