@@ -46,9 +46,13 @@ namespace AspNetCoreApplication.Mappings
 
             return mapper.Map<T>(source);
         }
-        public static void CopyTo(this object source, object dest)
+        public static void CopyTo(this object source, object destination)
         {
-            mapper.Map(source, dest);
+            if (source == null)
+            {
+                throw new NullReferenceException();
+            }
+            mapper.Map(source, destination);
         }
     }
 }
