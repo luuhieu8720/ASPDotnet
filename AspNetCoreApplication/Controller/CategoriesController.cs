@@ -61,7 +61,7 @@ namespace AspNetCoreApplication.Controller
         public async Task Put(int id, [FromBody] CategoryForm categoryForm)
         {
             var category = await dataContext.Categories.FindAsync(id) ??
-                             throw new NotFoundException("User can't be found");
+                             throw new NotFoundException("Category can't be found");
 
             categoryForm.CopyTo(category);
             dataContext.Entry(category).State = EntityState.Modified;
