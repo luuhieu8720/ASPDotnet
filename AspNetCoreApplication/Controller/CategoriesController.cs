@@ -63,8 +63,7 @@ namespace AspNetCoreApplication.Controller
             var category = await dataContext.Categories.FindAsync(id) ??
                              throw new NotFoundException("User can't be found");
 
-            categoryForm.Copy(category);
-            dataContext.Categories.Attach(category);
+            categoryForm.CopyTo(category);
             dataContext.Entry(category).State = EntityState.Modified;
 
             await dataContext.SaveChangesAsync();
