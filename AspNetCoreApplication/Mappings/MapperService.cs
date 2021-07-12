@@ -37,7 +37,7 @@ namespace AspNetCoreApplication.Mappings
             cfg.CreateMap<Book, BookDetail>();
         }
 
-        public static T MapTo<T>(this object source)
+        public static T ConvertTo<T>(this object source)
         {
             if(source == null)
             {
@@ -46,22 +46,9 @@ namespace AspNetCoreApplication.Mappings
 
             return mapper.Map<T>(source);
         }
-        public static void Copy(this object source, object dest)
+        public static void CopyTo(this object source, object dest)
         {
-            var sourceProperties = source.GetType().GetProperties();
-            var destProperties = dest.GetType().GetProperties();
-
-            foreach (var sourceProperty in sourceProperties)
-            {
-                foreach (var destProperty in destProperties)
-                {
-                    if (sourceProperty.Name == destProperty.Name && sourceProperty.PropertyType == destProperty.PropertyType)
-                    {
-                        destProperty.SetValue(dest, sourceProperty.GetValue(source));
-                        break;
-                    }
-                }
-            }
+            mapper.Map(source, dest);
         }
     }
 }
