@@ -28,9 +28,9 @@ namespace AspNetCoreApplication.Controller
 
         [HttpGet("{id}")]
         public async Task<CategoryDetail> Get(int id) => await categoryRepository.Get<CategoryDetail>(id);
-        
+
         [HttpPost]
-        public async Task Add([FromBody] CategoryForm categoryForm) => await categoryRepository.Add(categoryForm.ConvertTo<Category>());
+        public async Task Add([FromBody] CategoryForm categoryForm) => await categoryRepository.Add(categoryForm);
 
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await categoryRepository.Delete(id);

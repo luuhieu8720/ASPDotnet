@@ -9,7 +9,6 @@ namespace AspNetCoreApplication.Models
 {
     public class Author : BaseModel
     {
-        [Key]
         public string Name { get; set; }
         public string Website { get; set; }
         public DateTime Birthday { get; set; }

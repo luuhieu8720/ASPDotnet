@@ -23,7 +23,7 @@ namespace AspNetCoreApplication.Controller
         }
         [HttpGet]
         public async Task<List<UserItem>> Get() => await userRepository.Get<UserItem>();
-        
+
         [HttpGet("{id}")]
         public async Task<UserDetail> Get(int id) => await userRepository.Get<UserDetail>(id);
 

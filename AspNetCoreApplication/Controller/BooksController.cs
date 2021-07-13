@@ -35,6 +35,6 @@ namespace AspNetCoreApplication.Controller
 
         [HttpPut("{id}")]
         public async Task Put(int id, [FromBody] BookForm bookForm) => await bookRepository.Put(bookForm, id);
-    
+
     }
 }

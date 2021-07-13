@@ -25,6 +25,7 @@ namespace AspNetCoreApplication.Controller
         [HttpGet]
         public async Task<List<AuthorItem>> Get() => await authorRepository.Get<AuthorItem>();
 
+        [HttpGet("{id}")]
         public async Task<AuthorDetail> Get(int id) => await authorRepository.Get<AuthorDetail>(id);
 
         [HttpPost]
@@ -35,6 +36,6 @@ namespace AspNetCoreApplication.Controller
 
         [HttpPut("{id}")]
         public async Task Put(int id, [FromBody] AuthorForm authorForm) => await authorRepository.Put(authorForm, id);
-    
+
     }
 }

@@ -17,9 +17,9 @@ namespace AspNetCoreApplication.Repositories
             this.dataContext = dataContext;
         }
 
-        public async Task Add<X>(X source)
+        public async Task Add(object source)
         {
-            dataContext.Set<T>().Add(source.ConvertTo<T>());
+            await dataContext.Set<T>().AddAsync(source.ConvertTo<T>());
 
             await dataContext.SaveChangesAsync();
         }
@@ -49,13 +49,14 @@ namespace AspNetCoreApplication.Repositories
                          .ToListAsync();
         }
 
-        public async Task Put<X>(X source, int id)
+        public async Task Put(object source, int id)
         {
-            var author = await dataContext.Set<T>().FindAsync(id) ??
+            var entry = await dataContext.Set<T>().FindAsync(id) ??
                                throw new NotFoundException("Item can't be found");
 
-            source.CopyTo(author);
-            dataContext.Entry(author).State = EntityState.Modified;
+            source.CopyTo(entry);
+            entry.Id = id;
+            dataContext.Entry(entry).State = EntityState.Modified;
 
             await dataContext.SaveChangesAsync();
         }
