@@ -17,9 +17,9 @@ namespace AspNetCoreApplication.Repositories
             this.dataContext = dataContext;
         }
 
-        public async Task Add(T source)
+        public async Task Add<X>(X source)
         {
-            dataContext.Set<T>().Add(source);
+            dataContext.Set<T>().Add(source.ConvertTo<T>());
 
             await dataContext.SaveChangesAsync();
         }

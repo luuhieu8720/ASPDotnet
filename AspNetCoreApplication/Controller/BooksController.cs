@@ -15,37 +15,26 @@ namespace AspNetCoreApplication.Controller
     [Route("api/books")]
     public class BooksController : ControllerBase
     {
-        private readonly IRepository<Book> book;
-        public BooksController(IRepository<Book> book)
+        private readonly IRepository<Book> bookRepository;
+        public BooksController(IRepository<Book> bookRepository)
         {
-            this.book = book;
+            this.bookRepository = bookRepository;
         }
-        private readonly DataContext dataContext;
 
         [HttpGet]
-        public Task<List<BookItem>> Get()
-        {
-            return book.Get<BookItem>();
-        }
+        public async Task<List<BookItem>> Get() => await bookRepository.Get<BookItem>();
+
         [HttpGet("{id}")]
-        public Task<BookDetail> Get(int id)
-        {
-            return book.Get<BookDetail>(id);
-        }
+        public async Task<BookDetail> Get(int id) => await bookRepository.Get<BookDetail>(id);
+
         [HttpPost]
-        public Task Add([FromBody] BookForm bookForm)
-        {
-            return book.Add(bookForm.ConvertTo<Book>());
-        }
+        public async Task Add([FromBody] BookForm bookForm) => await bookRepository.Add(bookForm);
+
         [HttpDelete("{id}")]
-        public Task Delete(int id)
-        {
-            return book.Delete(id);
-        }
+        public async Task Delete(int id) => await bookRepository.Delete(id);
+
         [HttpPut("{id}")]
-        public Task Put(int id, [FromBody] BookForm bookForm)
-        {
-            return book.Put(bookForm, id);
-        }
+        public async Task Put(int id, [FromBody] BookForm bookForm) => await bookRepository.Put(bookForm, id);
+    
     }
 }

@@ -17,37 +17,24 @@ namespace AspNetCoreApplication.Controller
     [Route("api/authors")]
     public class AuthorController : ControllerBase
     {
-        private readonly IRepository<Author> author;
-        public AuthorController(IRepository<Author> author)
+        private readonly IRepository<Author> authorRepository;
+        public AuthorController(IRepository<Author> authorRepository)
         {
-            this.author = author;
+            this.authorRepository = authorRepository;
         }
         [HttpGet]
-        public Task<List<AuthorItem>> Get()
-        {
-            return author.Get<AuthorItem>();
-        }
+        public async Task<List<AuthorItem>> Get() => await authorRepository.Get<AuthorItem>();
 
-        [HttpGet("{id}")]
-        public Task<AuthorDetail> Get(int id)
-        {
-            return author.Get<AuthorDetail>(id);
-        }
+        public async Task<AuthorDetail> Get(int id) => await authorRepository.Get<AuthorDetail>(id);
+
         [HttpPost]
-        public Task Add([FromBody] AuthorForm authorForm)
-        {
-            return author.Add(authorForm.ConvertTo<Author>());
-        }
+        public async Task Add([FromBody] AuthorForm authorForm) => await authorRepository.Add(authorForm);
 
         [HttpDelete("{id}")]
-        public Task Delete(int id)
-        {
-            return author.Delete(id);
-        }
+        public async Task Delete(int id) => await authorRepository.Delete(id);
+
         [HttpPut("{id}")]
-        public Task Put(int id, [FromBody] AuthorForm authorForm)
-        {
-            return author.Put(authorForm, id);
-        }
+        public async Task Put(int id, [FromBody] AuthorForm authorForm) => await authorRepository.Put(authorForm, id);
+    
     }
 }

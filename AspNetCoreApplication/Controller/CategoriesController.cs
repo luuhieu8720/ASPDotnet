@@ -16,38 +16,27 @@ namespace AspNetCoreApplication.Controller
     [Route("api/categories")]
     public class CategoriesController : ControllerBase
     {
-        private readonly IRepository<Category> category;
+        private readonly IRepository<Category> categoryRepository;
 
-        public CategoriesController(IRepository<Category> category)
+        public CategoriesController(IRepository<Category> categoryRepository)
         {
-            this.category = category;
+            this.categoryRepository = categoryRepository;
         }
 
         [HttpGet]
-        public Task<List<CategoryItem>> Get()
-        {
-            return category.Get<CategoryItem>();
-        }
+        public async Task<List<CategoryItem>> Get() => await categoryRepository.Get<CategoryItem>();
 
         [HttpGet("{id}")]
-        public Task<CategoryDetail> Get(int id)
-        {
-            return category.Get<CategoryDetail>(id);
-        }
+        public async Task<CategoryDetail> Get(int id) => await categoryRepository.Get<CategoryDetail>(id);
+        
         [HttpPost]
-        public Task Add([FromBody] CategoryForm categoryForm)
-        {
-            return category.Add(categoryForm.ConvertTo<Category>());
-        }
+        public async Task Add([FromBody] CategoryForm categoryForm) => await categoryRepository.Add(categoryForm.ConvertTo<Category>());
+
         [HttpDelete("{id}")]
-        public Task Delete(int id)
-        {
-            return category.Delete(id);
-        }
+        public async Task Delete(int id) => await categoryRepository.Delete(id);
+
         [HttpPut("{id}")]
-        public Task Put(int id, [FromBody] CategoryForm categoryForm)
-        {
-            return category.Put(categoryForm, id);
-        }
+        public async Task Put(int id, [FromBody] CategoryForm categoryForm) => await categoryRepository.Put(categoryForm, id);
+
     }
 }

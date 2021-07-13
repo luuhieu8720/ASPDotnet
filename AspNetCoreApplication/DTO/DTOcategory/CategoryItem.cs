@@ -9,6 +9,7 @@ namespace AspNetCoreApplication.DTO.DTOcategory
 {
     public class CategoryItem
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     }

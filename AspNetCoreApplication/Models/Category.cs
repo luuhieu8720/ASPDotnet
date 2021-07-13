@@ -10,7 +10,6 @@ namespace AspNetCoreApplication.Models
     public class Category : BaseModel
     {
         [Key]
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public List<BookCategory> Books { get; set; }

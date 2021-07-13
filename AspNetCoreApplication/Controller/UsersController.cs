@@ -16,35 +16,25 @@ namespace AspNetCoreApplication.Controller
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly IRepository<User> user;
-        public UsersController(IRepository<User> user)
+        private readonly IRepository<User> userRepository;
+        public UsersController(IRepository<User> userRepository)
         {
-            this.user = user;
+            this.userRepository = userRepository;
         }
         [HttpGet]
-        public Task<List<UserItem>> Get()
-        {
-            return user.Get<UserItem>();
-        }
+        public async Task<List<UserItem>> Get() => await userRepository.Get<UserItem>();
+        
         [HttpGet("{id}")]
-        public Task<UserDetail> Get(int id)
-        {
-            return user.Get<UserDetail>(id);
-        }
+        public async Task<UserDetail> Get(int id) => await userRepository.Get<UserDetail>(id);
+
         [HttpPost]
-        public Task Add([FromBody] UserForm userForm)
-        {
-            return user.Add(userForm.ConvertTo<User>());
-        }
+        public async Task Add([FromBody] UserForm userForm) => await userRepository.Add(userForm);
+
         [HttpDelete("{id}")]
-        public Task Delete(int id)
-        {
-            return user.Delete(id);
-        }
+        public async Task Delete(int id) => await userRepository.Delete(id);
+
         [HttpPut("{id}")]
-        public Task Put(int id, [FromBody] UserForm userForm)
-        {
-            return user.Put(userForm, id);
-        }
+        public async Task Put(int id, [FromBody] UserForm userForm) => await userRepository.Put(userForm, id);
+
     }
 }
