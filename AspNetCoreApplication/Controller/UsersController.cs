@@ -9,60 +9,32 @@ using System.Threading.Tasks;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Models;
+using AspNetCoreApplication.Repositories;
 
 namespace AspNetCoreApplication.Controller
 {
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly DataContext dataContext;
-        public UsersController(DataContext dataContext)
+        private readonly IRepository<User> userRepository;
+        public UsersController(IRepository<User> userRepository)
         {
-            this.dataContext = dataContext;
+            this.userRepository = userRepository;
         }
         [HttpGet]
-        public async Task<List<UserItem>> Get()
-        {
-            var categories = await dataContext.Users.ToListAsync();
+        public async Task<List<UserItem>> Get() => await userRepository.Get<UserItem>();
 
-            return categories.Select(x => x.ConvertTo<UserItem>()).ToList();
-        }
         [HttpGet("{id}")]
-        public async Task<UserDetail> Get(int id)
-        {
-            var author = await dataContext.Users.FindAsync(id) ??
-                         throw new NotFoundException("User can't be found");
+        public async Task<UserDetail> Get(int id) => await userRepository.Get<UserDetail>(id);
 
-            return author.ConvertTo<UserDetail>();
-        }
         [HttpPost]
-        public async Task Add([FromBody] UserForm userForm)
-        {
-            var user = userForm.ConvertTo<User>();
+        public async Task Add([FromBody] UserForm userForm) => await userRepository.Create(userForm);
 
-            dataContext.Users.Add(user);
-
-            await dataContext.SaveChangesAsync();
-        }
         [HttpDelete("{id}")]
-        public async Task Delete(int id)
-        {
-            var user = await dataContext.Users.FindAsync(id) ??
-                         throw new NotFoundException("User can't be found");
+        public async Task Delete(int id) => await userRepository.Delete(id);
 
-            dataContext.Remove(user);
-            await dataContext.SaveChangesAsync();
-        }
         [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] UserForm userForm)
-        {
-            var user = await dataContext.Users.FindAsync(id) ??
-                             throw new NotFoundException("User can't be found");
+        public async Task Update(int id, [FromBody] UserForm userForm) => await userRepository.Update(id, userForm);
 
-            userForm.CopyTo(user);
-            dataContext.Entry(user).State = EntityState.Modified;
-
-            await dataContext.SaveChangesAsync();
-        }
     }
 }

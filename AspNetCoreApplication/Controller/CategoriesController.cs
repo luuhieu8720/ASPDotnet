@@ -2,6 +2,7 @@
 using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
+using AspNetCoreApplication.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,58 +16,27 @@ namespace AspNetCoreApplication.Controller
     [Route("api/categories")]
     public class CategoriesController : ControllerBase
     {
-        private readonly DataContext dataContext;
+        private readonly IRepository<Category> categoryRepository;
 
-        public CategoriesController(DataContext dataContext)
+        public CategoriesController(IRepository<Category> categoryRepository)
         {
-            this.dataContext = dataContext;
+            this.categoryRepository = categoryRepository;
         }
 
         [HttpGet]
-        public async Task<List<CategoryItem>> Get()
-        {
-            var categories = await dataContext.Categories.ToListAsync();
-
-            return categories.Select(x => x.ConvertTo<CategoryItem>()).ToList();
-        }
+        public async Task<List<CategoryItem>> Get() => await categoryRepository.Get<CategoryItem>();
 
         [HttpGet("{id}")]
-        public async Task<CategoryDetail> Get(int id)
-        {
-            var category = await dataContext.Categories.FindAsync(id) ??
-                           throw new NotFoundException("Category can't be found");
+        public async Task<CategoryDetail> Get(int id) => await categoryRepository.Get<CategoryDetail>(id);
 
-            return category.ConvertTo<CategoryDetail>();
-        }
         [HttpPost]
-        public async Task Add([FromBody] CategoryForm categoryForm)
-        {
-            var category = categoryForm.ConvertTo<Category>();
+        public async Task Add([FromBody] CategoryForm categoryForm) => await categoryRepository.Create(categoryForm);
 
-            dataContext.Categories.Add(category);
-
-            await dataContext.SaveChangesAsync();
-        }
         [HttpDelete("{id}")]
-        public async Task Delete(int id)
-        {
-            var category = await dataContext.Categories.FindAsync(id) ??
-                           throw new NotFoundException("Category can't be found");
+        public async Task Delete(int id) => await categoryRepository.Delete(id);
 
-            dataContext.Remove(category);
-
-            await dataContext.SaveChangesAsync();
-        }
         [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] CategoryForm categoryForm)
-        {
-            var category = await dataContext.Categories.FindAsync(id) ??
-                             throw new NotFoundException("Category can't be found");
+        public async Task Update(int id, [FromBody] CategoryForm categoryForm) => await categoryRepository.Update(id, categoryForm);
 
-            categoryForm.CopyTo(category);
-            dataContext.Entry(category).State = EntityState.Modified;
-
-            await dataContext.SaveChangesAsync();
-        }
     }
 }

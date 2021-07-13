@@ -1,9 +1,8 @@
 ﻿using AspNetCoreApplication.DTO.DTObook;
-using AspNetCoreApplication.DTO.DTOcategory;
 using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
-using Microsoft.AspNetCore.Http;
+using AspNetCoreApplication.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,55 +15,26 @@ namespace AspNetCoreApplication.Controller
     [Route("api/books")]
     public class BooksController : ControllerBase
     {
-        private readonly DataContext dataContext;
-
-        public BooksController(DataContext dataContext)
+        private readonly IRepository<Book> bookRepository;
+        public BooksController(IRepository<Book> bookRepository)
         {
-            this.dataContext = dataContext;
+            this.bookRepository = bookRepository;
         }
+
         [HttpGet]
-        public async Task<List<BookItem>> Get()
-        {
-            var books = await dataContext.Books.ToListAsync();
-            return books.Select(x => x.ConvertTo<BookItem>()).ToList();
-        }
+        public async Task<List<BookItem>> Get() => await bookRepository.Get<BookItem>();
+
         [HttpGet("{id}")]
-        public async Task<BookDetail> Get(int id)
-        {
-            var book = await dataContext.Books.FindAsync(id) ??
-                           throw new NotFoundException("Book can't be found");
+        public async Task<BookDetail> Get(int id) => await bookRepository.Get<BookDetail>(id);
 
-            return book.ConvertTo<BookDetail>();
-        }
         [HttpPost]
-        public async Task Add([FromBody] BookForm bookForm)
-        {
-            var book = bookForm.ConvertTo<Book>();
+        public async Task Add([FromBody] BookForm bookForm) => await bookRepository.Create(bookForm);
 
-            await dataContext.Books.AddAsync(book);
-
-            await dataContext.SaveChangesAsync();
-        }
         [HttpDelete("{id}")]
-        public async Task Delete(int id)
-        {
-            var book = await dataContext.Books.FindAsync(id) ??
-                           throw new NotFoundException("Book can't be found");
+        public async Task Delete(int id) => await bookRepository.Delete(id);
 
-            dataContext.Remove(book);
-
-            await dataContext.SaveChangesAsync();
-        }
         [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] BookForm bookForm)
-        {
-            var book = await dataContext.Books.FindAsync(id) ??
-                             throw new NotFoundException("User can't be found");
+        public async Task Update(int id, [FromBody] BookForm bookForm) => await bookRepository.Update(id, bookForm);
 
-            bookForm.CopyTo(book);
-            dataContext.Entry(book).State = EntityState.Modified;
-
-            await dataContext.SaveChangesAsync();
-        }
     }
 }
