@@ -30,13 +30,13 @@ namespace AspNetCoreApplication.Controller
         public async Task<CategoryDetail> Get(int id) => await categoryRepository.Get<CategoryDetail>(id);
 
         [HttpPost]
-        public async Task Add([FromBody] CategoryForm categoryForm) => await categoryRepository.Add(categoryForm);
+        public async Task Add([FromBody] CategoryForm categoryForm) => await categoryRepository.Create(categoryForm);
 
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await categoryRepository.Delete(id);
 
         [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] CategoryForm categoryForm) => await categoryRepository.Put(categoryForm, id);
+        public async Task Update(int id, [FromBody] CategoryForm categoryForm) => await categoryRepository.Update(id, categoryForm);
 
     }
 }

@@ -9,8 +9,9 @@ namespace AspNetCoreApplication.Repositories
     {
         Task<List<O>> Get<O>();
         Task<O> Get<O>(int Id);
-        Task Add(object source);
+        Task Create(object source);
         Task Delete(int Id);
-        Task Put(object source, int id);
+        Task Update(int id, object source);
+        Task<T> GetByIdOrThrow(int id);
     }
 }

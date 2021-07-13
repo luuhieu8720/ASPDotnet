@@ -17,27 +17,25 @@ namespace AspNetCoreApplication.Repositories
             this.dataContext = dataContext;
         }
 
-        public async Task Add(object source)
+        public async Task Create(object source)
         {
             await dataContext.Set<T>().AddAsync(source.ConvertTo<T>());
 
             await dataContext.SaveChangesAsync();
         }
 
-        public async Task Delete(int Id)
+        public async Task Delete(int id)
         {
-            var entry = await dataContext.Set<T>().FindAsync(Id) ??
-                           throw new NotFoundException("Item can't be found");
+            var entry = GetByIdOrThrow(id);
 
             dataContext.Remove(entry);
 
             await dataContext.SaveChangesAsync();
         }
 
-        public async Task<O> Get<O>(int Id)
+        public async Task<O> Get<O>(int id)
         {
-            var entry = await dataContext.Set<T>().FindAsync(Id) ??
-                              throw new NotFoundException("Item can't be found");
+            var entry = await GetByIdOrThrow(id);
 
             return entry.ConvertTo<O>();
         }
@@ -49,16 +47,20 @@ namespace AspNetCoreApplication.Repositories
                          .ToListAsync();
         }
 
-        public async Task Put(object source, int id)
+        public async Task Update(int id, object source)
         {
-            var entry = await dataContext.Set<T>().FindAsync(id) ??
-                               throw new NotFoundException("Item can't be found");
+            var entry = GetByIdOrThrow(id);
 
             source.CopyTo(entry);
-            entry.Id = id;
             dataContext.Entry(entry).State = EntityState.Modified;
 
             await dataContext.SaveChangesAsync();
+        }
+
+        public async Task<T> GetByIdOrThrow(int id)
+        {
+             return await dataContext.Set<T>().FindAsync(id) ??
+                         throw new NotFoundException("Item can't be found");
         }
     }
 }

@@ -29,13 +29,13 @@ namespace AspNetCoreApplication.Controller
         public async Task<AuthorDetail> Get(int id) => await authorRepository.Get<AuthorDetail>(id);
 
         [HttpPost]
-        public async Task Add([FromBody] AuthorForm authorForm) => await authorRepository.Add(authorForm);
+        public async Task Add([FromBody] AuthorForm authorForm) => await authorRepository.Create(authorForm);
 
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await authorRepository.Delete(id);
 
         [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] AuthorForm authorForm) => await authorRepository.Put(authorForm, id);
+        public async Task Update(int id, [FromBody] AuthorForm authorForm) => await authorRepository.Update(id, authorForm);
 
     }
 }
