@@ -26,7 +26,7 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Delete(int id)
         {
-            var entry = GetByIdOrThrow(id);
+            var entry = await GetByIdOrThrow(id);
 
             dataContext.Remove(entry);
 
@@ -49,8 +49,7 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Update(int id, object source)
         {
-            var entry = GetByIdOrThrow(id);
-
+            var entry = await GetByIdOrThrow(id);
             source.CopyTo(entry);
             dataContext.Entry(entry).State = EntityState.Modified;
 
