@@ -15,8 +15,8 @@ namespace AspNetCoreApplication.Controller
     [Route("api/books")]
     public class BooksController : ControllerBase
     {
-        private readonly IRepository<Book> bookRepository;
-        public BooksController(IRepository<Book> bookRepository)
+        private readonly IBookRepository bookRepository;
+        public BooksController(IBookRepository bookRepository)
         {
             this.bookRepository = bookRepository;
         }
