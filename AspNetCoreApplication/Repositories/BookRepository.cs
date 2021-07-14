@@ -14,6 +14,8 @@ using Microsoft.Web.Administration;
 using Microsoft.Extensions.Options;
 using AutoMapper.Configuration;
 using AspNetCoreApplication.Config;
+using System.Text.RegularExpressions;
+using System.Drawing.Imaging;
 
 namespace AspNetCoreApplication.Repositories
 {
@@ -27,37 +29,28 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Create(BookForm source)
         {
-            source.Cover = CheckForUploading(source.Cover);
+            source.Cover = await CheckForUploading(source.Cover);
             await base.Create(source);
         }
 
         public async Task Update(int id, BookForm source)
         {
-            source.Cover = CheckForUploading(source.Cover);
+            source.Cover = await CheckForUploading(source.Cover);
 
             await base.Update(id, source);
         }
 
-        public static int GCD(int a, int b)
+        public async Task<string> CheckForUploading(string urlOrBase64)
         {
-            while (a != b)
+            if (string.IsNullOrEmpty(urlOrBase64))
             {
-                if (a > b)
-                {
-                    a -= b;
-                }
-                else
-                {
-                    b -= a;
-                }
+                return string.Empty;
             }
-            return a;
-        }
 
-        public string CheckForUploading(string urlOrBase64)
-        {
-            if (urlOrBase64.EndsWith(".jpg"))
+            if(new Regex("http(s)?://").IsMatch(urlOrBase64))
+            {
                 return urlOrBase64;
+            }
 
             var base64Header = "base64,";
             var imageHeader = "image/";
@@ -65,37 +58,22 @@ namespace AspNetCoreApplication.Repositories
 
             var imageName =   Guid.NewGuid().ToString("N") + "." + fileExtension;
             var imageData = urlOrBase64.Substring(urlOrBase64.IndexOf(base64Header) + 1 + base64Header.Length - 1);
-            byte[] fileData = Convert.FromBase64String(imageData);
+            var fileData = Convert.FromBase64String(imageData);
 
-            //write image
-            using (var imageFile = new FileStream(imageName, FileMode.Create))
-            {
-                var ms = new MemoryStream(fileData);
-                Image img = Image.FromStream(ms);
-                var imageSize = new Tuple<int, int>(img.Width, img.Height);
+            var memoryStream = new MemoryStream(fileData);
+            Image img = Image.FromStream(memoryStream);
+            
+            var widthLimit = imageConfig.LimitSize[0];
+            var heightLimit = imageConfig.LimitSize[1];
 
-                var limitSize = imageConfig.LimitSize;
-                var gcd = GCD(imageSize.Item1, imageSize.Item2);
-                var scale = new Tuple<int, int>(imageSize.Item1 / gcd, imageSize.Item2 / gcd);
+            img = ReSize(img, widthLimit, heightLimit);
 
-                if (imageSize.Item1 > limitSize || imageSize.Item2 > limitSize)
-                {
-                    if (imageSize.Item1 >= imageSize.Item2)
-                    {
-                        img = new Bitmap(img, new System.Drawing.Size(limitSize, limitSize * scale.Item2 / scale.Item1));
-                    }
-                    else if (imageSize.Item2 > imageSize.Item1)
-                    {
-                        img = new Bitmap(img, new System.Drawing.Size(limitSize * scale.Item2 / scale.Item1, limitSize));
-                    }
-                }
-                
-                img.Save(imageFile, System.Drawing.Imaging.ImageFormat.Jpeg);
-            }
+            var tempMemoryStream = new MemoryStream();
+            img.Save(tempMemoryStream, ImageFormat.Jpeg);
 
             var uploadParams = new ImageUploadParams()
             {
-                File = new FileDescription(imageName),
+                File = new FileDescription(imageName, new MemoryStream(tempMemoryStream.ToArray())),
                 UseFilename = true,
                 UniqueFilename = false
             };
@@ -107,10 +85,17 @@ namespace AspNetCoreApplication.Repositories
 
             Cloudinary cloudinary = new(account);
             cloudinary.Api.Secure = true;
-            cloudinary.Upload(uploadParams);
+            var result = await cloudinary.UploadAsync(uploadParams);
             
-            return imageName;
+            return result.SecureUrl.ToString();
         }
 
+        public Image ReSize(Image image, int widthLimit, int heightLimit)
+        {
+            if (image.Width > widthLimit) image = new Bitmap(image, new System.Drawing.Size(widthLimit, image.Height * widthLimit / image.Width));
+            if (image.Height > heightLimit) image = new Bitmap(image, new System.Drawing.Size(image.Width * heightLimit / image.Height, heightLimit));
+
+            return image;
+        }
     }
 }

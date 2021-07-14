@@ -9,7 +9,6 @@ namespace AspNetCoreApplication.Repositories
 {
     public interface IBookRepository : IRepository<Book>
     {
-        string CheckForUploading(string urlOrBase64);
         Task Create(BookForm source);
         Task Update(int id, BookForm source);
     }
