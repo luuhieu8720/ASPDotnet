@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Config
 {
-    public class CloudinaryCloudService
+    public class CloudinaryCloudService : ICloudinaryService
     {
         private readonly ImageConfig imageConfig;
         public CloudinaryCloudService(ImageConfig imageConfig)
@@ -29,7 +29,7 @@ namespace AspNetCoreApplication.Config
                 imageConfig.ApiKey,
                 imageConfig.ApiSecret);
 
-            Cloudinary cloudinary = new(account);
+            var cloudinary = new Cloudinary(account);
             cloudinary.Api.Secure = true;
             var result = await cloudinary.UploadAsync(uploadParams);
             return result.SecureUrl.ToString();

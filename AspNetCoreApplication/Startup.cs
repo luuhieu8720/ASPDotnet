@@ -42,6 +42,7 @@ namespace AspNetCoreApplication
             });
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<ICloudinaryService, CloudinaryCloudService>();
             ConfigType<ImageConfig>(services);
         }
 

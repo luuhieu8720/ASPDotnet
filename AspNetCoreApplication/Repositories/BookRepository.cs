@@ -16,15 +16,18 @@ using AutoMapper.Configuration;
 using AspNetCoreApplication.Config;
 using System.Text.RegularExpressions;
 using System.Drawing.Imaging;
+using AspNetCoreApplication.Extensions;
 
 namespace AspNetCoreApplication.Repositories
 {
     public class BookRepository : Repository<Book>, IBookRepository
     {
         private readonly ImageConfig imageConfig;
-        public BookRepository(DataContext dataContext, ImageConfig imageConfig) : base(dataContext)
+        private readonly ICloudinaryService cloudService;
+        public BookRepository(DataContext dataContext, ImageConfig imageConfig, ICloudinaryService cloudService) : base(dataContext)
         {
             this.imageConfig = imageConfig;
+            this.cloudService = cloudService;
         }
 
         public async Task Create(BookForm source)
@@ -63,33 +66,32 @@ namespace AspNetCoreApplication.Repositories
             using var memoryStream = new MemoryStream(fileData);
             var img = Image.FromStream(memoryStream);
 
-            var resizedImage = EnsureImageSizeLimit(img, imageConfig.CoverLimitWidth, imageConfig.CoverLimitHeight);
+            var resizedImage = EnsureImageSizeLimit(img);
 
             var dataUpload = resizedImage.ImageToByteArray();
 
-            var uploadResult = await new CloudinaryCloudService(imageConfig).UploadImage(imageName,dataUpload);
+            var uploadResult = await cloudService.UploadImage(imageName,dataUpload);
 
             return uploadResult;
         }
 
-        public Image EnsureImageSizeLimit(Image image, int widthLimit, int heightLimit)
+        public Image EnsureImageSizeLimit(Image image)
         {
-            if (image.Width > widthLimit) image = new Bitmap(image, widthLimit, image.Height * widthLimit / image.Width);
-            if (image.Height > heightLimit) image = new Bitmap(image, image.Width * heightLimit / image.Height, heightLimit);
+            var heightLimit = imageConfig.CoverLimitWidth;
+            var widthLimit = imageConfig.CoverLimitHeight;
+
+            var max = Math.Max(image.Width, image.Height);
+            if (max == image.Width && image.Width > widthLimit)
+            {
+                image = new Bitmap(image, widthLimit, image.Height * widthLimit / image.Width);
+            }
+            else if (max == image.Height && image.Height > heightLimit)
+            {
+                image = new Bitmap(image, image.Width * heightLimit / image.Height, heightLimit);
+            }
 
             return image;
         }
        
-    }
-    static class Extension
-    {
-        public static byte[] ImageToByteArray(this Image imageIn)
-        {
-            using (var ms = new MemoryStream())
-            {
-                imageIn.Save(ms, ImageFormat.Jpeg);
-                return ms.ToArray();
-            }
-        }
     }
 }
