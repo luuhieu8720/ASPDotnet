@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Extensions
 {
-    static class ImageExtension
+    public static class ImageExtension
     {
-        public static byte[] ImageToByteArray(this Image imageIn)
+        public static byte[] ImageToByteArray(this Image image)
         {
             using (var ms = new MemoryStream())
             {
-                imageIn.Save(ms, ImageFormat.Jpeg);
+                image.Save(ms, ImageFormat.Jpeg);
                 return ms.ToArray();
             }
         }

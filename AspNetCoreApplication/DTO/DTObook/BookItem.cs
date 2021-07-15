@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AspNetCoreApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AspNetCoreApplication.DTO.DTObook
+namespace AspNetCoreApplication.DTO.DTOBook
 {
     public class BookItem
     {

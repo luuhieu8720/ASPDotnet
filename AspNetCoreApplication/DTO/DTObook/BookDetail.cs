@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreApplication.Models;
 
-namespace AspNetCoreApplication.DTO.DTObook
+namespace AspNetCoreApplication.DTO.DTOBook
 {
     public class BookDetail
     {

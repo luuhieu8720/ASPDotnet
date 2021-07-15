@@ -10,26 +10,24 @@ namespace AspNetCoreApplication.Config
 {
     public class CloudinaryCloudService : ICloudinaryService
     {
-        private readonly ImageConfig imageConfig;
+        private readonly Cloudinary cloudinary;
         public CloudinaryCloudService(ImageConfig imageConfig)
         {
-            this.imageConfig = imageConfig;
+            var account = new Account(
+                imageConfig.CloudinaryCloud,
+                imageConfig.ApiKey,
+                imageConfig.ApiSecret);
+            this.cloudinary = new Cloudinary(account);
         }
         public async Task<string> UploadImage(string imageName, byte[] data)
         {
             var uploadParams = new ImageUploadParams()
             {
-                File = new FileDescription(imageName, new MemoryStream(data.ToArray())),
+                File = new FileDescription(imageName, new MemoryStream(data)),
                 UseFilename = true,
                 UniqueFilename = false
             };
 
-            var account = new Account(
-                imageConfig.CloudinaryCloud,
-                imageConfig.ApiKey,
-                imageConfig.ApiSecret);
-
-            var cloudinary = new Cloudinary(account);
             cloudinary.Api.Secure = true;
             var result = await cloudinary.UploadAsync(uploadParams);
             return result.SecureUrl.ToString();

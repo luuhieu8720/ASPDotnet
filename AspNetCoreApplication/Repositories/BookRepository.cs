@@ -1,4 +1,4 @@
-﻿using AspNetCoreApplication.DTO.DTObook;
+﻿using AspNetCoreApplication.DTO.DTOBook;
 using AspNetCoreApplication.Models;
 using System;
 using System.Collections.Generic;
@@ -43,7 +43,7 @@ namespace AspNetCoreApplication.Repositories
             await base.Update(id, source);
         }
 
-        public async Task<string> CheckForUploading(string urlOrBase64)
+        private async Task<string> CheckForUploading(string urlOrBase64)
         {
             if (string.IsNullOrEmpty(urlOrBase64))
             {
@@ -75,7 +75,7 @@ namespace AspNetCoreApplication.Repositories
             return uploadResult;
         }
 
-        public Image EnsureImageSizeLimit(Image image)
+        private Image EnsureImageSizeLimit(Image image)
         {
             var heightLimit = imageConfig.CoverLimitWidth;
             var widthLimit = imageConfig.CoverLimitHeight;
