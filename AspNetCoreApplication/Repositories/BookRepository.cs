@@ -80,17 +80,17 @@ namespace AspNetCoreApplication.Repositories
             var heightLimit = imageConfig.CoverLimitWidth;
             var widthLimit = imageConfig.CoverLimitHeight;
 
-            var max = Math.Max(image.Width, image.Height);
-            if (max == image.Width && image.Width > widthLimit)
+            if (image.Width < widthLimit && image.Height < heightLimit)
             {
-                image = new Bitmap(image, widthLimit, image.Height * widthLimit / image.Width);
-            }
-            else if (max == image.Height && image.Height > heightLimit)
-            {
-                image = new Bitmap(image, image.Width * heightLimit / image.Height, heightLimit);
+                return image;
             }
 
-            return image;
+            var scaleWidth = image.Width * 1.0 / widthLimit;
+            var scaleHeight = image.Height * 1.0 / heightLimit;
+
+            var scale = Math.Max(scaleWidth, scaleHeight);
+
+            return new Bitmap(image, (int)(image.Width / scale), (int) (image.Height / scale));
         }
        
     }
