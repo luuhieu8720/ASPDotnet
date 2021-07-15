@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreApplication.Models;
 
-namespace AspNetCoreApplication.DTO.DTObook
+namespace AspNetCoreApplication.DTO.DTOBook
 {
     public class BookDetail
     {
@@ -15,6 +15,7 @@ namespace AspNetCoreApplication.DTO.DTObook
         public int Year { get; set; }
         public int AuthorId { get; set; }
         public Author Author { get; set; }
+        public string Cover { get; set; }
         public List<BookCategory> Categories { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using AspNetCoreApplication.DTO.DTOuser;
+﻿using AspNetCoreApplication.DTO.DTOUser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

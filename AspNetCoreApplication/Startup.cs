@@ -1,4 +1,6 @@
+using AspNetCoreApplication.Config;
 using AspNetCoreApplication.Handlings;
+using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +41,17 @@ namespace AspNetCoreApplication
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AspNetCoreApplication", Version = "v1" });
             });
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<ICloudinaryService, CloudinaryCloudService>();
+            ConfigType<ImageConfig>(services);
+        }
+
+        private T ConfigType<T>(IServiceCollection services)
+        {
+            var configObject = Activator.CreateInstance<T>();
+            Configuration.Bind(typeof(T).Name, configObject);
+            services.AddSingleton(typeof(T), configObject);
+            return configObject;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
