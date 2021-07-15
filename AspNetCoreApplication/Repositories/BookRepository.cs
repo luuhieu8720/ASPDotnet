@@ -47,7 +47,7 @@ namespace AspNetCoreApplication.Repositories
                 return string.Empty;
             }
 
-            if(new Regex("http(s)?://").IsMatch(urlOrBase64))
+            if (new Regex("http(s)?://").IsMatch(urlOrBase64))
             {
                 return urlOrBase64;
             }
@@ -56,46 +56,40 @@ namespace AspNetCoreApplication.Repositories
             var imageHeader = "image/";
             var fileExtension = urlOrBase64.Substring(urlOrBase64.IndexOf(imageHeader) + imageHeader.Length, urlOrBase64.IndexOf(base64Header) - base64Header.Length);
 
-            var imageName =   Guid.NewGuid().ToString("N") + "." + fileExtension;
-            var imageData = urlOrBase64.Substring(urlOrBase64.IndexOf(base64Header) + 1 + base64Header.Length - 1);
+            var imageName = Guid.NewGuid().ToString("N") + "." + fileExtension;
+            var imageData = urlOrBase64.Substring(urlOrBase64.IndexOf(base64Header) + base64Header.Length);
             var fileData = Convert.FromBase64String(imageData);
 
-            var memoryStream = new MemoryStream(fileData);
-            Image img = Image.FromStream(memoryStream);
-            
-            var widthLimit = imageConfig.LimitSize[0];
-            var heightLimit = imageConfig.LimitSize[1];
+            using var memoryStream = new MemoryStream(fileData);
+            var img = Image.FromStream(memoryStream);
 
-            img = ReSize(img, widthLimit, heightLimit);
+            var resizedImage = EnsureImageSizeLimit(img, imageConfig.CoverLimitWidth, imageConfig.CoverLimitHeight);
 
-            var tempMemoryStream = new MemoryStream();
-            img.Save(tempMemoryStream, ImageFormat.Jpeg);
+            var dataUpload = resizedImage.ImageToByteArray();
 
-            var uploadParams = new ImageUploadParams()
-            {
-                File = new FileDescription(imageName, new MemoryStream(tempMemoryStream.ToArray())),
-                UseFilename = true,
-                UniqueFilename = false
-            };
+            var uploadResult = await new CloudinaryCloudService(imageConfig).UploadImage(imageName,dataUpload);
 
-            var account = new Account(
-                imageConfig.CloudinaryCloud,
-                imageConfig.ApiKey,
-                imageConfig.ApiSecret);
-
-            Cloudinary cloudinary = new(account);
-            cloudinary.Api.Secure = true;
-            var result = await cloudinary.UploadAsync(uploadParams);
-            
-            return result.SecureUrl.ToString();
+            return uploadResult;
         }
 
-        public Image ReSize(Image image, int widthLimit, int heightLimit)
+        public Image EnsureImageSizeLimit(Image image, int widthLimit, int heightLimit)
         {
-            if (image.Width > widthLimit) image = new Bitmap(image, new System.Drawing.Size(widthLimit, image.Height * widthLimit / image.Width));
-            if (image.Height > heightLimit) image = new Bitmap(image, new System.Drawing.Size(image.Width * heightLimit / image.Height, heightLimit));
+            if (image.Width > widthLimit) image = new Bitmap(image, widthLimit, image.Height * widthLimit / image.Width);
+            if (image.Height > heightLimit) image = new Bitmap(image, image.Width * heightLimit / image.Height, heightLimit);
 
             return image;
+        }
+       
+    }
+    static class Extension
+    {
+        public static byte[] ImageToByteArray(this Image imageIn)
+        {
+            using (var ms = new MemoryStream())
+            {
+                imageIn.Save(ms, ImageFormat.Jpeg);
+                return ms.ToArray();
+            }
         }
     }
 }
