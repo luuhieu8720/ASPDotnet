@@ -84,5 +84,13 @@ namespace AspNetCoreApplication.Repositories
             await dataContext.SaveChangesAsync();
 
         }
+
+        public async Task DeleteBookCategory(int bookId, int categoryId)
+        {
+            var entry = await dataContext.BookCategories.FindAsync(bookId) ??
+                                  throw new NotFoundException("Book Category can't be found");
+            dataContext.Remove(entry);
+            await dataContext.SaveChangesAsync();
+        }
     }
 }

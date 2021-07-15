@@ -19,8 +19,11 @@ namespace AspNetCoreApplication.Controller
             this.bookRepository = bookRepository;
         }
         [HttpPost("{bookId}/categories/{categoryId}")]
-        public async Task AddCategoriesToBook(int bookId, int categoryId) 
+        public async Task Create(int bookId, int categoryId) 
         => await bookRepository.AddCategoryToBook(bookId, categoryId);
+
+        [HttpDelete("{bookId}/categories/{categoryId}")]
+        public async Task Delete(int bookId, int categoryId) => await bookRepository.DeleteBookCategory(bookId, categoryId);
 
     }
 }
