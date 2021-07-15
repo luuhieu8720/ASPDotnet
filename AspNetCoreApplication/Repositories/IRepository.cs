@@ -13,5 +13,6 @@ namespace AspNetCoreApplication.Repositories
         Task Delete(int Id);
         Task Update(int id, object source);
         Task<T> GetByIdOrThrow(int id);
+        Task AddCategoryToBook(int bookId, int categoryId);
     }
 }

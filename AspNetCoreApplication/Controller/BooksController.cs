@@ -35,6 +35,5 @@ namespace AspNetCoreApplication.Controller
 
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] BookForm bookForm) => await bookRepository.Update(id, bookForm);
-
     }
 }

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using AspNetCoreApplication.DTO.DTObookcategory;
 
 namespace AspNetCoreApplication.Mappings
 {
@@ -35,6 +36,7 @@ namespace AspNetCoreApplication.Mappings
             cfg.CreateMap<Book, BookItem>();
             cfg.CreateMap<BookForm, Book>();
             cfg.CreateMap<Book, BookDetail>();
+            cfg.CreateMap<BookCategoryForm, BookCategory>();
         }
 
         public static T ConvertTo<T>(this object source)
