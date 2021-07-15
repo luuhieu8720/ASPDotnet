@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace AspNetCoreApplication.DTO.DTObook
+namespace AspNetCoreApplication.DTO.DTOBook
 {
     public class BookForm
     {
@@ -15,6 +15,7 @@ namespace AspNetCoreApplication.DTO.DTObook
         public int Year { get; set; }
         public int AuthorId { get; set; }
         public Author Author { get; set; }
+        public string Cover { get; set; }
         public List<BookCategory> Categories { get; set; }
     }
 }

@@ -1,7 +1,7 @@
-﻿using AspNetCoreApplication.DTO.DTOauthor;
-using AspNetCoreApplication.DTO.DTOcategory;
-using AspNetCoreApplication.DTO.DTOuser;
-using AspNetCoreApplication.DTO.DTObook;
+﻿using AspNetCoreApplication.DTO.DTOAuthor;
+using AspNetCoreApplication.DTO.DTOCategory;
+using AspNetCoreApplication.DTO.DTOUser;
+using AspNetCoreApplication.DTO.DTOBook;
 using AspNetCoreApplication.Models;
 using AutoMapper;
 using AutoMapper.Configuration;

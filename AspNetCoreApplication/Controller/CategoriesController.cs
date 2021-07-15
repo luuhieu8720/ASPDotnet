@@ -1,4 +1,4 @@
-﻿using AspNetCoreApplication.DTO.DTOcategory;
+﻿using AspNetCoreApplication.DTO.DTOCategory;
 using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;

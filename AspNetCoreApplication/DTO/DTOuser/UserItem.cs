@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AspNetCoreApplication.DTO.DTOuser
+namespace AspNetCoreApplication.DTO.DTOUser
 {
     public class UserItem
     {
