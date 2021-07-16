@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Repositories
 {
-    public interface IBookCategoryRepository
+    public interface ICategoryRepository
     {
-        Task Add(int bookId, int categoryId);
-
-        Task Delete(int bookId, int categoryId);
-
-        Task<List<Category>> GetCategories(int bookId);
+        Task Delete(int categoryId);
+        Task<List<Book>> GetBooks(int categoryId);
     }
 }
