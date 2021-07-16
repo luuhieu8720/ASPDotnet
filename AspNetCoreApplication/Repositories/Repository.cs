@@ -1,5 +1,4 @@
-﻿using AspNetCoreApplication.DTO.DTObookcategory;
-using AspNetCoreApplication.Exceptions;
+﻿using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
 using AutoMapper;
@@ -66,12 +65,11 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task AddCategoryToBook(int bookId, int categoryId)
         {
-            var category = await dataContext.Categories.FindAsync(categoryId) ??
-                                  throw new NotFoundException("Category can't be found");
-            var book = await dataContext.Books.FindAsync(bookId) ??
-                                     throw new NotFoundException("Book can't be found");
+            var category = await dataContext.Categories.FindAsync(categoryId);
+                                 
+            var book = await dataContext.Books.FindAsync(bookId);
 
-            var bookCategory = new BookCategoryForm
+            var bookCategory = new BookCategory
             {
                 BookId = bookId,
                 Book = book,
@@ -79,7 +77,7 @@ namespace AspNetCoreApplication.Repositories
                 Category = category
             };
 
-            await dataContext.BookCategories.AddAsync(bookCategory.ConvertTo<BookCategory>());
+            await dataContext.BookCategories.AddAsync(bookCategory);
 
             await dataContext.SaveChangesAsync();
 
@@ -87,10 +85,36 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task DeleteBookCategory(int bookId, int categoryId)
         {
-            var entry = await dataContext.BookCategories.FindAsync(bookId) ??
-                                  throw new NotFoundException("Book Category can't be found");
+            var entry = await dataContext.BookCategories.Where(x => x.BookId == bookId && x.CategoryId == categoryId)
+                                                        .Select(x => x)
+                                                        .FirstOrDefaultAsync();
+                                  
             dataContext.Remove(entry);
             await dataContext.SaveChangesAsync();
+        }
+        public async Task<List<Category>> GetCategoryByBookId(int bookId)
+        {
+            return await dataContext.BookCategories.Where(x => x.BookId == bookId)
+                                                   .Select(x => x.Category)
+                                                   .ToListAsync();
+        }
+
+        public async Task DeleteCategory(int categoryId)
+        {
+            var entry = await GetByIdOrThrow(categoryId);
+
+            var categoryOfBook = await dataContext.BookCategories.Where(x => x.CategoryId == categoryId)
+                                                                 .Select(x => x).ToListAsync();
+            dataContext.BookCategories.RemoveRange(categoryOfBook);
+            dataContext.Remove(entry);
+
+            await dataContext.SaveChangesAsync();
+        }
+        public async Task<List<Book>> GetBookByCategoryId(int categoryId)
+        {
+            return await dataContext.BookCategories.Where(x => x.CategoryId == categoryId)
+                                                   .Select(x => x.Book)
+                                                   .ToListAsync();
         }
     }
 }

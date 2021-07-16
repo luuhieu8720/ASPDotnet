@@ -35,5 +35,14 @@ namespace AspNetCoreApplication.Controller
 
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] BookForm bookForm) => await bookRepository.Update(id, bookForm);
+        [HttpPost("{bookId}/categories/{categoryId}")]
+        public async Task Create(int bookId, int categoryId)
+        => await bookRepository.AddCategoryToBook(bookId, categoryId);
+
+        [HttpDelete("{bookId}/categories/{categoryId}")]
+        public async Task Delete(int bookId, int categoryId) => await bookRepository.DeleteBookCategory(bookId, categoryId);
+        [HttpGet("{bookId}/categories")]
+        public async Task<List<Category>> GetBookCategory(int bookId)
+        => await bookRepository.GetCategoryByBookId(bookId);
     }
 }
