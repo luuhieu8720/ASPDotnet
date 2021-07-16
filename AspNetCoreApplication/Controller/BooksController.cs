@@ -16,9 +16,11 @@ namespace AspNetCoreApplication.Controller
     public class BooksController : ControllerBase
     {
         private readonly IBookRepository bookRepository;
-        public BooksController(IBookRepository bookRepository)
+        private readonly IBookCategoryRepository bookCategoryRepository;
+        public BooksController(IBookRepository bookRepository, IBookCategoryRepository bookCategoryRepository)
         {
             this.bookRepository = bookRepository;
+            this.bookCategoryRepository = bookCategoryRepository;
         }
 
         [HttpGet]
@@ -36,13 +38,13 @@ namespace AspNetCoreApplication.Controller
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] BookForm bookForm) => await bookRepository.Update(id, bookForm);
         [HttpPost("{bookId}/categories/{categoryId}")]
-        public async Task Create(int bookId, int categoryId)
-        => await bookRepository.AddCategoryToBook(bookId, categoryId);
+        public async Task CreateCategory(int bookId, int categoryId)
+        => await bookCategoryRepository.AddCategoryToBook(bookId, categoryId);
 
         [HttpDelete("{bookId}/categories/{categoryId}")]
-        public async Task Delete(int bookId, int categoryId) => await bookRepository.DeleteBookCategory(bookId, categoryId);
+        public async Task Delete(int bookId, int categoryId) => await bookCategoryRepository.DeleteBookCategory(bookId, categoryId);
         [HttpGet("{bookId}/categories")]
-        public async Task<List<Category>> GetBookCategory(int bookId)
-        => await bookRepository.GetCategoryByBookId(bookId);
+        public async Task<List<Category>> GetCategories(int bookId)
+        => await bookCategoryRepository.GetCategoryByBookId(bookId);
     }
 }
