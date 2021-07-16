@@ -22,7 +22,9 @@ namespace AspNetCoreApplication.Controller
 
         private readonly ICategoryRepository categoryBookRepository;
 
-        public CategoriesController(IRepository<Category> categoryRepository, IBookCategoryRepository bookCategoryRepository, ICategoryRepository categoryBookRepository)
+        public CategoriesController(IRepository<Category> categoryRepository,
+                                    IBookCategoryRepository bookCategoryRepository, 
+                                    ICategoryRepository categoryBookRepository)
         {
             this.categoryRepository = categoryRepository;
             this.bookCategoryRepository = bookCategoryRepository;

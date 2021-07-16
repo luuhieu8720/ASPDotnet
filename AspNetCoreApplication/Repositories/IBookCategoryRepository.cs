@@ -12,6 +12,5 @@ namespace AspNetCoreApplication.Repositories
 
         Task Delete(int bookId, int categoryId);
 
-        Task<List<Category>> GetCategories(int bookId);
     }
 }

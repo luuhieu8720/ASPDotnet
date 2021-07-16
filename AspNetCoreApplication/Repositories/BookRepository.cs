@@ -17,17 +17,21 @@ using AspNetCoreApplication.Config;
 using System.Text.RegularExpressions;
 using System.Drawing.Imaging;
 using AspNetCoreApplication.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreApplication.Repositories
 {
     public class BookRepository : Repository<Book>, IBookRepository
     {
         private readonly ImageConfig imageConfig;
+
         private readonly ICloudinaryService cloudService;
+        private readonly DataContext dataContext;
         public BookRepository(DataContext dataContext, ImageConfig imageConfig, ICloudinaryService cloudService) : base(dataContext)
         {
             this.imageConfig = imageConfig;
             this.cloudService = cloudService;
+            this.dataContext = dataContext;
         }
 
         public async Task Create(BookForm source)
@@ -92,6 +96,12 @@ namespace AspNetCoreApplication.Repositories
 
             return new Bitmap(image, (int)(image.Width / scale), (int) (image.Height / scale));
         }
-       
+        public async Task<List<Category>> GetCategories(int bookId)
+        {
+            return await dataContext.BookCategories.Where(x => x.BookId == bookId)
+                                                   .Select(x => x.Category)
+                                                   .ToListAsync();
+        }
+
     }
 }

@@ -3,6 +3,7 @@ using AspNetCoreApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,26 +25,28 @@ namespace AspNetCoreApplication.Repositories
                 BookId = bookId,
                 CategoryId = categoryId,
             };
+            try
+            {
+                await dataContext.BookCategories.AddAsync(bookCategory);
 
-            await dataContext.BookCategories.AddAsync(bookCategory);
-
-            await dataContext.SaveChangesAsync();
+                await dataContext.SaveChangesAsync();
+            }
+            catch
+            {
+                throw new ConstraintException("Constraint violated");
+            }
 
         }
 
         public async Task Delete(int bookId, int categoryId)
         {
-            var entry = await dataContext.BookCategories.FirstOrDefaultAsync(x => x.BookId == bookId && x.CategoryId == categoryId);
+            var entry = await dataContext.BookCategories.FirstOrDefaultAsync(x => x.BookId == bookId && x.CategoryId == categoryId) ??
+                            throw new NotFoundException("BookCategory can't be found");
 
             dataContext.Remove(entry);
+
             await dataContext.SaveChangesAsync();
         }
 
-        public async Task<List<Category>> GetCategories(int bookId)
-        {
-            return await dataContext.BookCategories.Where(x => x.BookId == bookId)
-                                                   .Select(x => x.Category)
-                                                   .ToListAsync();
-        }
     }
 }

@@ -27,6 +27,12 @@ namespace AspNetCoreApplication
             .WithMany(c => c.Books)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<BookCategory>()
+            .HasOne<Book>(i => i.Book)
+            .WithMany(c => c.Categories)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<Book> Books { get; set; }
