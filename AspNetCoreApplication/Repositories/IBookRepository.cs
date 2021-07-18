@@ -10,6 +10,9 @@ namespace AspNetCoreApplication.Repositories
     public interface IBookRepository : IRepository<Book>
     {
         Task Create(BookForm source);
+
         Task Update(int id, BookForm source);
+
+        Task<List<Category>> GetCategories(int bookId);
     }
 }

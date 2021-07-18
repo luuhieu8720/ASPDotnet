@@ -1,5 +1,7 @@
 ﻿using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Mappings;
+using AspNetCoreApplication.Models;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,6 @@ namespace AspNetCoreApplication.Repositories
     public class Repository<T> : IRepository<T> where T : BaseModel
     {
         private readonly DataContext dataContext;
-
         public Repository(DataContext dataContext)
         {
             this.dataContext = dataContext;
@@ -61,5 +62,6 @@ namespace AspNetCoreApplication.Repositories
              return await dataContext.Set<T>().FindAsync(id) ??
                          throw new NotFoundException("Item can't be found");
         }
+
     }
 }

@@ -16,9 +16,13 @@ namespace AspNetCoreApplication.Controller
     public class BooksController : ControllerBase
     {
         private readonly IBookRepository bookRepository;
-        public BooksController(IBookRepository bookRepository)
+
+        private readonly IBookCategoryRepository bookCategoryRepository;
+
+        public BooksController(IBookRepository bookRepository, IBookCategoryRepository bookCategoryRepository)
         {
             this.bookRepository = bookRepository;
+            this.bookCategoryRepository = bookCategoryRepository;
         }
 
         [HttpGet]
@@ -35,6 +39,17 @@ namespace AspNetCoreApplication.Controller
 
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] BookForm bookForm) => await bookRepository.Update(id, bookForm);
+        
+        [HttpPost("{id}/categories/{categoryId}")]
+        public async Task AddCategory(int id, int categoryId)
+            => await bookCategoryRepository.Add(id, categoryId);
+
+        [HttpDelete("{id}/categories/{categoryId}")]
+        public async Task Delete(int id, int categoryId) => await bookCategoryRepository.Delete(id, categoryId);
+        
+        [HttpGet("{id}/categories")]
+        public async Task<List<Category>> GetCategories(int id)
+            => await bookRepository.GetCategories(id);
 
     }
 }

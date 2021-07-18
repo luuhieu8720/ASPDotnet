@@ -17,17 +17,20 @@ using AspNetCoreApplication.Config;
 using System.Text.RegularExpressions;
 using System.Drawing.Imaging;
 using AspNetCoreApplication.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreApplication.Repositories
 {
     public class BookRepository : Repository<Book>, IBookRepository
     {
-        private readonly ImageConfig imageConfig;
         private readonly ICloudinaryService cloudService;
-        public BookRepository(DataContext dataContext, ImageConfig imageConfig, ICloudinaryService cloudService) : base(dataContext)
+
+        private readonly DataContext dataContext;
+
+        public BookRepository(DataContext dataContext, ICloudinaryService cloudService) : base(dataContext)
         {
-            this.imageConfig = imageConfig;
             this.cloudService = cloudService;
+            this.dataContext = dataContext;
         }
 
         public async Task Create(BookForm source)
@@ -66,7 +69,7 @@ namespace AspNetCoreApplication.Repositories
             using var memoryStream = new MemoryStream(fileData);
             var img = Image.FromStream(memoryStream);
 
-            var resizedImage = EnsureImageSizeLimit(img);
+            var resizedImage = img.EnsureImageSizeLimit();
 
             var dataUpload = resizedImage.ImageToByteArray();
 
@@ -75,23 +78,13 @@ namespace AspNetCoreApplication.Repositories
             return uploadResult;
         }
 
-        private Image EnsureImageSizeLimit(Image image)
+        public async Task<List<Category>> GetCategories(int bookId)
         {
-            var heightLimit = imageConfig.CoverLimitWidth;
-            var widthLimit = imageConfig.CoverLimitHeight;
-
-            if (image.Width < widthLimit && image.Height < heightLimit)
-            {
-                return image;
-            }
-
-            var scaleWidth = image.Width * 1.0 / widthLimit;
-            var scaleHeight = image.Height * 1.0 / heightLimit;
-
-            var scale = Math.Max(scaleWidth, scaleHeight);
-
-            return new Bitmap(image, (int)(image.Width / scale), (int) (image.Height / scale));
+            return await dataContext.Books
+                .Where(x => x.Id == bookId)
+                .SelectMany(x => x.Categories.Select(y => y.Category))
+                .ToListAsync();
         }
-       
+
     }
 }

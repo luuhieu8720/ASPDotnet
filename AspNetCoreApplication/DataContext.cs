@@ -22,10 +22,23 @@ namespace AspNetCoreApplication
                 x.CategoryId,
                 x.BookId
             });
+            modelBuilder.Entity<BookCategory>()
+            .HasOne<Category>(i => i.Category)
+            .WithMany(c => c.Books)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<BookCategory>()
+            .HasOne<Book>(i => i.Book)
+            .WithMany(c => c.Categories)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
         }
+
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<BookCategory> BookCategories { get; set; }
     }
 }
