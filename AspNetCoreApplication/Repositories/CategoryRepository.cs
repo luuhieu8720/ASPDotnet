@@ -16,6 +16,7 @@ namespace AspNetCoreApplication.Repositories
         {
             this.dataContext = dataContext;
         }
+
         public async Task Delete(int categoryId)
         {
             var entry = await dataContext.Categories.FindAsync(categoryId) ??
@@ -25,11 +26,12 @@ namespace AspNetCoreApplication.Repositories
 
             await dataContext.SaveChangesAsync();
         }
+
         public async Task<List<Book>> GetBooks(int categoryId)
         {
-            return await dataContext.BookCategories.Where(x => x.CategoryId == categoryId)
-                                                   .Select(x => x.Book)
-                                                   .ToListAsync();
+            return await dataContext.Categories.Where(x => x.Id == categoryId)
+                .SelectMany(x => x.Books.Select(y => y.Book))
+                .ToListAsync();
         }
     }
 }
