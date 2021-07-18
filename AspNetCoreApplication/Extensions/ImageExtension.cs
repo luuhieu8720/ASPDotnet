@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AspNetCoreApplication.Config;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -17,6 +18,24 @@ namespace AspNetCoreApplication.Extensions
                 image.Save(ms, ImageFormat.Jpeg);
                 return ms.ToArray();
             }
+        }
+        public static Image EnsureImageSizeLimit(this Image image)
+        {
+            var imageConfig = new ImageConfig();
+            var heightLimit = imageConfig.CoverLimitWidth;
+            var widthLimit = imageConfig.CoverLimitHeight;
+
+            if (image.Width < widthLimit && image.Height < heightLimit)
+            {
+                return image;
+            }
+
+            var scaleWidth = image.Width * 1.0 / widthLimit;
+            var scaleHeight = image.Height * 1.0 / heightLimit;
+
+            var scale = Math.Max(scaleWidth, scaleHeight);
+
+            return new Bitmap(image, (int)(image.Width / scale), (int)(image.Height / scale));
         }
     }
 }

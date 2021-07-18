@@ -33,7 +33,7 @@ namespace AspNetCoreApplication.Repositories
             }
             catch
             {
-                throw new ConstraintException("Constraint violated");
+                throw new BadRequestExceptions("Bad request");
             }
 
         }

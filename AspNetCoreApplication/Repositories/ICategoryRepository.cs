@@ -9,6 +9,7 @@ namespace AspNetCoreApplication.Repositories
     public interface ICategoryRepository
     {
         Task Delete(int categoryId);
+
         Task<List<Book>> GetBooks(int categoryId);
     }
 }

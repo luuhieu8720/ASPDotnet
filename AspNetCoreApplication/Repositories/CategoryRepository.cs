@@ -19,7 +19,7 @@ namespace AspNetCoreApplication.Repositories
         public async Task Delete(int categoryId)
         {
             var entry = await dataContext.Categories.FindAsync(categoryId) ??
-                         throw new NotFoundException("Item can't be found");
+                         throw new NotFoundException("Category can't be found");
 
             dataContext.Remove(entry);
 

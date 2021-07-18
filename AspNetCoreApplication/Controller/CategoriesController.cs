@@ -18,16 +18,12 @@ namespace AspNetCoreApplication.Controller
     {
         private readonly IRepository<Category> categoryRepository;
 
-        private readonly IBookCategoryRepository bookCategoryRepository;
-
         private readonly ICategoryRepository categoryBookRepository;
 
         public CategoriesController(IRepository<Category> categoryRepository,
-                                    IBookCategoryRepository bookCategoryRepository, 
                                     ICategoryRepository categoryBookRepository)
         {
             this.categoryRepository = categoryRepository;
-            this.bookCategoryRepository = bookCategoryRepository;
             this.categoryBookRepository = categoryBookRepository;
         }
 
@@ -43,10 +39,10 @@ namespace AspNetCoreApplication.Controller
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] CategoryForm categoryForm) => await categoryRepository.Update(id, categoryForm);
         
-        [HttpDelete("{categoryId}")]
+        [HttpDelete("{id}")]
         public async Task DeleteCategory(int id) => await categoryBookRepository.Delete(id);
         
-        [HttpGet("{categoryId}/books")]
-        public async Task<List<Book>> GetBooksByCategoryId(int categoryId) => await categoryBookRepository.GetBooks(categoryId);
+        [HttpGet("{id}/books")]
+        public async Task<List<Book>> GetBooksByCategoryId(int id) => await categoryBookRepository.GetBooks(id);
     }
 }
