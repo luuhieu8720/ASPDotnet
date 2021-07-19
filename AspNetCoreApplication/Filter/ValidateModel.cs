@@ -18,7 +18,7 @@ namespace AspNetCoreApplication.Filter
             {
                 var errors = context.ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
                 
-                var errorMessage = string.Join(",", errors.Select(x => x.ErrorMessage).ToArray());
+                var errorMessage = errors.Select(x => x.ErrorMessage).FirstOrDefault();
 
                 throw new BadRequestExceptions(errorMessage);
             }

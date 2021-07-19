@@ -23,6 +23,7 @@ namespace AspNetCoreApplication.Controller
         {
             this.authorRepository = authorRepository;
         }
+
         [HttpGet]
         public async Task<List<AuthorItem>> Get() => await authorRepository.Get<AuthorItem>();
 
@@ -30,20 +31,12 @@ namespace AspNetCoreApplication.Controller
         public async Task<AuthorDetail> Get(int id) => await authorRepository.Get<AuthorDetail>(id);
 
         [HttpPost]
-        [ValidateModel]
-        public async Task Add([FromBody] AuthorForm authorForm)
-        {
-            await authorRepository.Create(authorForm);
-        }
+        public async Task Add([FromBody] AuthorForm authorForm) => await authorRepository.Create(authorForm);
 
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await authorRepository.Delete(id);
 
         [HttpPut("{id}")]
-        [ValidateModel]
-        public async Task Update(int id, [FromBody] AuthorForm authorForm)
-        {
-            await authorRepository.Update(id, authorForm);
-        }
+        public async Task Update(int id, [FromBody] AuthorForm authorForm) => await authorRepository.Update(id, authorForm);
     }
 }

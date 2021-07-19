@@ -10,24 +10,22 @@ namespace AspNetCoreApplication.DTO.DTOBook
 {
     public class BookForm
     {
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing name")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Tên sách không được để trống")]
         public string Name { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing description")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Mô tả sách không được để trống")]
         public string Description { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing price")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Giá bán không được để trống")]
         public double Price { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing published year")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Năm phát hành không được để trống")]
         public int Year { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing author ID")]
         public int AuthorId { get; set; }
 
         public Author Author { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing cover")]
         public string Cover { get; set; }
 
         public List<BookCategory> Categories { get; set; }

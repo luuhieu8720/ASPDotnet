@@ -8,16 +8,13 @@ namespace AspNetCoreApplication.DTO.DTOAuthor
 {
     public class AuthorForm
     {
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing name")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Tên tác giả không được để trống")]
         public string Name { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing website")]
         public string Website { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing birthday")]
-        public DateTime? Birthday { get; set; }
-
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing cover")]
         public string Cover { get; set; }
+
+        public DateTime? Birthday { get; set; }
     }
 }

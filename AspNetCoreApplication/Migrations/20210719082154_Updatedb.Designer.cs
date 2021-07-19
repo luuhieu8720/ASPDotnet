@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AspNetCoreApplication.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210719012200_Updatedb")]
+    [Migration("20210719082154_Updatedb")]
     partial class Updatedb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,11 +28,8 @@ namespace AspNetCoreApplication.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Cover")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -117,7 +114,7 @@ namespace AspNetCoreApplication.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("LastOnline")

@@ -9,16 +9,15 @@ namespace AspNetCoreApplication.DTO.DTOUser
 {
     public class UserForm
     {
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing name")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Tên người dùng không được để trống")]
         public string Name { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing username")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Tên tài khoảng không được để trống")]
         public string Username { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing password")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Mật khẩu không được để trống")]
         public string Password { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing birthday")]
         public DateTime? Birthday { get; set; }
 
         public DateTime LastOnline { get; set; }

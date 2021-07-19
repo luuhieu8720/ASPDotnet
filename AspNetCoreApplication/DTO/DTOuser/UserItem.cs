@@ -14,12 +14,10 @@ namespace AspNetCoreApplication.DTO.DTOUser
 
         public string Username { get; set; }
 
-        public string Password { get; set; }
-
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
 
         public DateTime LastOnline { get; set; }
 
-        public Role Role { get; set; }
+        public Role? Role { get; set; }
     }
 }

@@ -35,18 +35,10 @@ namespace AspNetCoreApplication.Controller
         public async Task<CategoryDetail> Get(int id) => await categoryRepository.Get<CategoryDetail>(id);
 
         [HttpPost]
-        [ValidateModel]
-        public async Task Add([FromBody] CategoryForm categoryForm)
-        {
-            await categoryRepository.Create(categoryForm);
-        }
+        public async Task Add([FromBody] CategoryForm categoryForm) => await categoryRepository.Create(categoryForm);
 
         [HttpPut("{id}")]
-        [ValidateModel]
-        public async Task Update(int id, [FromBody] CategoryForm categoryForm)
-        {
-            await categoryRepository.Create(categoryForm);
-        }
+        public async Task Update(int id, [FromBody] CategoryForm categoryForm) => await categoryRepository.Create(categoryForm);
         
         [HttpDelete("{id}")]
         public async Task DeleteCategory(int id) => await categoryBookRepository.Delete(id);

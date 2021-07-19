@@ -28,21 +28,13 @@ namespace AspNetCoreApplication.Controller
         public async Task<UserDetail> Get(int id) => await userRepository.Get<UserDetail>(id);
 
         [HttpPost]
-        [ValidateModel]
-        public async Task Add([FromBody] UserForm userForm)
-        {
-            await userRepository.Create(userForm);
-        }
+        public async Task Add([FromBody] UserForm userForm) => await userRepository.Create(userForm);
 
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await userRepository.Delete(id);
 
         [HttpPut("{id}")]
-        [ValidateModel]
-        public async Task Update(int id, [FromBody] UserForm userForm)
-        {
-            await userRepository.Update(id, userForm);
-        }
+        public async Task Update(int id, [FromBody] UserForm userForm) => await userRepository.Update(id, userForm);
 
     }
 }
