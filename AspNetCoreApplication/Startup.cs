@@ -45,7 +45,9 @@ namespace AspNetCoreApplication
             services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICloudinaryService, CloudinaryCloudService>();
+            services.AddScoped<IAuthentication, Authentication>();
             ConfigType<ImageConfig>(services);
+            ConfigType<TokenConfig>(services);
         }
 
         private T ConfigType<T>(IServiceCollection services)
