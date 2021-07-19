@@ -1,5 +1,6 @@
 ﻿using AspNetCoreApplication.DTO.DTOAuthor;
 using AspNetCoreApplication.Exceptions;
+using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
@@ -29,13 +30,37 @@ namespace AspNetCoreApplication.Controller
         public async Task<AuthorDetail> Get(int id) => await authorRepository.Get<AuthorDetail>(id);
 
         [HttpPost]
-        public async Task Add([FromBody] AuthorForm authorForm) => await authorRepository.Create(authorForm);
+        [ValidateModel]
+        public async Task Add([FromBody] AuthorForm authorForm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
+                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
+
+                throw new BadRequestExceptions(errorMessage);
+            }
+
+            await authorRepository.Create(authorForm);
+        }
 
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await authorRepository.Delete(id);
 
         [HttpPut("{id}")]
-        public async Task Update(int id, [FromBody] AuthorForm authorForm) => await authorRepository.Update(id, authorForm);
+        [ValidateModel]
+        public async Task Update(int id, [FromBody] AuthorForm authorForm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
+                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
+
+                throw new BadRequestExceptions(errorMessage);
+            }
+
+            await authorRepository.Update(id, authorForm);
+        }
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AspNetCoreApplication.DTO.DTOBook;
 using AspNetCoreApplication.Exceptions;
+using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
@@ -32,13 +33,37 @@ namespace AspNetCoreApplication.Controller
         public async Task<BookDetail> Get(int id) => await bookRepository.Get<BookDetail>(id);
 
         [HttpPost]
-        public async Task Add([FromBody] BookForm bookForm) => await bookRepository.Create(bookForm);
+        [ValidateModel]
+        public async Task Add([FromBody] BookForm bookForm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
+                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
+
+                throw new BadRequestExceptions(errorMessage);
+            }
+
+            await bookRepository.Create(bookForm);
+        }
 
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await bookRepository.Delete(id);
 
         [HttpPut("{id}")]
-        public async Task Update(int id, [FromBody] BookForm bookForm) => await bookRepository.Update(id, bookForm);
+        [ValidateModel]
+        public async Task Update(int id, [FromBody] BookForm bookForm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
+                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
+
+                throw new BadRequestExceptions(errorMessage);
+            }
+
+            await bookRepository.Update(id, bookForm);
+        }
         
         [HttpPost("{id}/categories/{categoryId}")]
         public async Task AddCategory(int id, int categoryId)
