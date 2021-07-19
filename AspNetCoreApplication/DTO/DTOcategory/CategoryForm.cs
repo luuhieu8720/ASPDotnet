@@ -10,12 +10,10 @@ namespace AspNetCoreApplication.DTO.DTOCategory
 {
     public class CategoryForm
     {
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing category name")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Tên thể loại không được trống")]
         public string Name { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Missing category description")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Mô tả không được trống")]
         public string Description { get; set; }
-
-        public List<BookCategory> Books { get; set; }
     }
 }

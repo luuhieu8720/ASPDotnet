@@ -36,11 +36,7 @@ namespace AspNetCoreApplication
                 options => options.UseSqlServer("name=ConnectionStrings:Connection")
             );
             services.AddControllers();
-            services.AddMvc(x => x.Filters.Add<HandleExceptionHandling>());
-            services.AddMvc(opt =>
-            {
-                opt.Filters.Add(typeof(ValidateModel));
-            });
+            services.AddMvc(ConfigMvc);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AspNetCoreApplication", Version = "v1" });
@@ -59,6 +55,12 @@ namespace AspNetCoreApplication
             Configuration.Bind(typeof(T).Name, configObject);
             services.AddSingleton(typeof(T), configObject);
             return configObject;
+        }
+
+        private void ConfigMvc(MvcOptions options)
+        {
+            options.Filters.Add<HandleExceptionHandling>();
+            options.Filters.Add(typeof(ValidateModel));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

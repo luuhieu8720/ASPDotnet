@@ -39,7 +39,6 @@ namespace AspNetCoreApplication.Controller
         public async Task Delete(int id) => await bookRepository.Delete(id);
 
         [HttpPut("{id}")]
-        [ValidateModel]
         public async Task Update(int id, [FromBody] BookForm bookForm) => await bookRepository.Update(id, bookForm);
         
         [HttpPost("{id}/categories/{categoryId}")]
