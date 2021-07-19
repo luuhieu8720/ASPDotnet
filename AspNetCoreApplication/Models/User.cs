@@ -11,8 +11,13 @@ namespace AspNetCoreApplication.Models
     public class User : BaseModel
     {
         public string Name { get; set; }
+
         public string Username { get; set; }
-        public DateTime Birthday { get; set; }
+
+        public string Password { get; set; }
+
+        public DateTime? Birthday { get; set; }
+
         public DateTime LastOnline { get; set; }
        
         public Role Role{ get; set; }

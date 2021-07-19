@@ -10,8 +10,9 @@ namespace AspNetCoreApplication.Models
     public class Author : BaseModel
     {
         public string Name { get; set; }
+
         public string Website { get; set; }
-        public DateTime Birthday { get; set; }
-        public string Cover { get; set; }
+
+        public DateTime? Birthday { get; set; }
     }
 }

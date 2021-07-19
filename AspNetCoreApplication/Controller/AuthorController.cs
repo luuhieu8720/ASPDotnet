@@ -1,5 +1,6 @@
 ﻿using AspNetCoreApplication.DTO.DTOAuthor;
 using AspNetCoreApplication.Exceptions;
+using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
@@ -22,6 +23,7 @@ namespace AspNetCoreApplication.Controller
         {
             this.authorRepository = authorRepository;
         }
+
         [HttpGet]
         public async Task<List<AuthorItem>> Get() => await authorRepository.Get<AuthorItem>();
 
@@ -36,6 +38,5 @@ namespace AspNetCoreApplication.Controller
 
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] AuthorForm authorForm) => await authorRepository.Update(id, authorForm);
-
     }
 }
