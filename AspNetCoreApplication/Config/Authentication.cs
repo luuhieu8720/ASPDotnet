@@ -29,7 +29,7 @@ namespace AspNetCoreApplication.Config
             var checkUser = await dataContext.Users.Where(x => x.Username == username && x.Password == password)
                                                    .CountAsync();
             
-            if (checkUser < 1) throw new NotFoundException("");
+            if (checkUser < 1) throw new UnauthorizedException("Unauthorized");
 
             var token = new JwtSecurityToken(tokenConfig.Issuer, tokenConfig.Audience);
 
