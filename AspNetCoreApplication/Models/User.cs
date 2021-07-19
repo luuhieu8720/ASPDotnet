@@ -16,10 +16,10 @@ namespace AspNetCoreApplication.Models
 
         public string Password { get; set; }
 
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
 
         public DateTime LastOnline { get; set; }
-       
-        public Role Role{ get; set; }
+
+        public Role Role { get; set; }
     }
 }

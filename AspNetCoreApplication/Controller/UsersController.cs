@@ -1,15 +1,14 @@
 ﻿using AspNetCoreApplication.DTO.DTOUser;
-using Microsoft.AspNetCore.Http;
+using AspNetCoreApplication.Exceptions;
+using AspNetCoreApplication.Filter;
+using AspNetCoreApplication.Models;
+using AspNetCoreApplication.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AspNetCoreApplication.Mappings;
-using AspNetCoreApplication.Exceptions;
-using AspNetCoreApplication.Models;
-using AspNetCoreApplication.Repositories;
+using System.Web.Http.Controllers;
 
 namespace AspNetCoreApplication.Controller
 {
@@ -21,6 +20,7 @@ namespace AspNetCoreApplication.Controller
         {
             this.userRepository = userRepository;
         }
+
         [HttpGet]
         public async Task<List<UserItem>> Get() => await userRepository.Get<UserItem>();
 

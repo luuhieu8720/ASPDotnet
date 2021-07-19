@@ -1,5 +1,6 @@
 ﻿using AspNetCoreApplication.DTO.DTOBook;
 using AspNetCoreApplication.Exceptions;
+using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
@@ -50,6 +51,5 @@ namespace AspNetCoreApplication.Controller
         [HttpGet("{id}/categories")]
         public async Task<List<Category>> GetCategories(int id)
             => await bookRepository.GetCategories(id);
-
     }
 }
