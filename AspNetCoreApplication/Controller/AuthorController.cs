@@ -33,14 +33,6 @@ namespace AspNetCoreApplication.Controller
         [ValidateModel]
         public async Task Add([FromBody] AuthorForm authorForm)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
-                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
-
-                throw new BadRequestExceptions(errorMessage);
-            }
-
             await authorRepository.Create(authorForm);
         }
 
@@ -51,16 +43,7 @@ namespace AspNetCoreApplication.Controller
         [ValidateModel]
         public async Task Update(int id, [FromBody] AuthorForm authorForm)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
-                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
-
-                throw new BadRequestExceptions(errorMessage);
-            }
-
             await authorRepository.Update(id, authorForm);
         }
-
     }
 }

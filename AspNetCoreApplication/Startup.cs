@@ -1,4 +1,5 @@
 using AspNetCoreApplication.Config;
+using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Handlings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
@@ -36,6 +37,10 @@ namespace AspNetCoreApplication
             );
             services.AddControllers();
             services.AddMvc(x => x.Filters.Add<HandleExceptionHandling>());
+            services.AddMvc(opt =>
+            {
+                opt.Filters.Add(typeof(ValidateModel));
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AspNetCoreApplication", Version = "v1" });

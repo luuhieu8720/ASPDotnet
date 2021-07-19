@@ -36,14 +36,6 @@ namespace AspNetCoreApplication.Controller
         [ValidateModel]
         public async Task Add([FromBody] BookForm bookForm)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
-                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
-
-                throw new BadRequestExceptions(errorMessage);
-            }
-
             await bookRepository.Create(bookForm);
         }
 
@@ -54,14 +46,6 @@ namespace AspNetCoreApplication.Controller
         [ValidateModel]
         public async Task Update(int id, [FromBody] BookForm bookForm)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
-                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
-
-                throw new BadRequestExceptions(errorMessage);
-            }
-
             await bookRepository.Update(id, bookForm);
         }
         
@@ -75,6 +59,5 @@ namespace AspNetCoreApplication.Controller
         [HttpGet("{id}/categories")]
         public async Task<List<Category>> GetCategories(int id)
             => await bookRepository.GetCategories(id);
-
     }
 }

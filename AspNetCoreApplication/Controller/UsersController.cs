@@ -4,9 +4,11 @@ using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Controllers;
 
 namespace AspNetCoreApplication.Controller
 {
@@ -29,14 +31,6 @@ namespace AspNetCoreApplication.Controller
         [ValidateModel]
         public async Task Add([FromBody] UserForm userForm)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
-                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
-
-                throw new BadRequestExceptions(errorMessage);
-            }
-
             await userRepository.Create(userForm);
         }
 
@@ -47,14 +41,6 @@ namespace AspNetCoreApplication.Controller
         [ValidateModel]
         public async Task Update(int id, [FromBody] UserForm userForm)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
-                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
-
-                throw new BadRequestExceptions(errorMessage);
-            }
-
             await userRepository.Update(id, userForm);
         }
 

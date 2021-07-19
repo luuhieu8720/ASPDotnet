@@ -38,13 +38,6 @@ namespace AspNetCoreApplication.Controller
         [ValidateModel]
         public async Task Add([FromBody] CategoryForm categoryForm)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
-                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
-
-                throw new BadRequestExceptions(errorMessage);
-            }
             await categoryRepository.Create(categoryForm);
         }
 
@@ -52,15 +45,7 @@ namespace AspNetCoreApplication.Controller
         [ValidateModel]
         public async Task Update(int id, [FromBody] CategoryForm categoryForm)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(modelState => modelState.Errors).ToList();
-                var errorMessage = errors.Select(x => x.ErrorMessage).ToList().Aggregate("", (current, next) => current + ", " + next);
-
-                throw new BadRequestExceptions(errorMessage);
-            }
-
-            await categoryRepository.Update(id, categoryForm);
+            await categoryRepository.Create(categoryForm);
         }
         
         [HttpDelete("{id}")]
