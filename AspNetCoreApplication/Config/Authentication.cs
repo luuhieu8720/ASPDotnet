@@ -9,6 +9,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.IdentityModel.JsonWebTokens;
+using AspNetCoreApplication.Authentications;
+using AspNetCoreApplication.Extensions;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace AspNetCoreApplication.Config
 {
@@ -24,16 +28,26 @@ namespace AspNetCoreApplication.Config
             this.dataContext = dataContext;
         }
 
-        public async Task<string> Post(string username, string password)
+        public async Task<TokenResponse> Login(string username, string password)
         {
-            var checkUser = await dataContext.Users.Where(x => x.Username == username && x.Password == password)
-                                                   .CountAsync();
+            var user = await dataContext.Users.FirstOrDefaultAsync(x => x.Username == username && x.Password == password.Encrypt());
+
+            if (user == null) throw new UnauthorizedException("Sai tên đăng nhập hoặc mật khẩu");
+
+            var claims = new[]
+            {
+                new Claim("Id",user.Id.ToString()),
+                new Claim("Role",user.Role.ToString()),
+                new Claim("Name",user.Name)
+            };
+
+            var tokenString = new JwtSecurityToken(tokenConfig.Issuer, tokenConfig.Audience, claims);
             
-            if (checkUser < 1) throw new UnauthorizedException("Unauthorized");
+            var token = new TokenResponse();
 
-            var token = new JwtSecurityToken(tokenConfig.Issuer, tokenConfig.Audience);
+            token.Token = new JwtSecurityTokenHandler().WriteToken(tokenString);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return token;
         }
     }
 }

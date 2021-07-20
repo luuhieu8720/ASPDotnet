@@ -1,3 +1,4 @@
+using AspNetCoreApplication.Authentications;
 using AspNetCoreApplication.Config;
 using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Handlings;
@@ -47,6 +48,7 @@ namespace AspNetCoreApplication
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICloudinaryService, CloudinaryCloudService>();
             services.AddScoped<IAuthentication, Authentication>();
+            services.AddScoped<IUserRepository, UserRepository>();
             ConfigType<ImageConfig>(services);
             ConfigType<TokenConfig>(services);
         }

@@ -1,4 +1,5 @@
-﻿using AspNetCoreApplication.DTO.DTOUser;
+﻿using AspNetCoreApplication.Authentications;
+using AspNetCoreApplication.DTO.DTOUser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace AspNetCoreApplication.Config
 {
     public interface IAuthentication
     {
-        Task<string> Post(string username, string password);
+        Task<TokenResponse> Login(string username, string password);
     }
 }

@@ -21,7 +21,7 @@ namespace AspNetCoreApplication.Authentications
         }
 
         [HttpPost]
-        public async Task<string> Post(string username, string password) => await authentication.Post(username, password);
+        public async Task<TokenResponse> Post(string username, string password) => await authentication.Login(username, password);
 
     }
 }
