@@ -13,11 +13,9 @@ namespace AspNetCoreApplication.Repositories
 {
     public class UserRepository : Repository<User>, IUserRepository
     {
-        private readonly DataContext dataContext;
-
         public UserRepository(DataContext dataContext) : base(dataContext)
         {
-            this.dataContext = dataContext;
+
         }
 
         public async Task Create(UserForm userForm)
@@ -29,9 +27,6 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Update(int id, UserForm userForm)
         {
-            var entry = await dataContext.Users.FindAsync(id) ??
-                         throw new NotFoundException("User can't be found");
-
             userForm.Password = userForm.Password.Encrypt();
             await base.Update(id, userForm);
         }
