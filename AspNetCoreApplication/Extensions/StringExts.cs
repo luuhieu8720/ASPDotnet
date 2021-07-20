@@ -12,21 +12,14 @@ namespace AspNetCoreApplication.Extensions
     {
         private const string passwordKey = "USpsD7LaKc27gmYG9TZCDUGb3MnAZatQJSUdLp9MkLNkq4MAj5qRYZ7zLFZa";
 
-        public static string Encrypt(this string password)
+		public static string Encrypt(this string password)
         {
             password += passwordKey;
-			ASCIIEncoding asciiEnc = new ASCIIEncoding();
-			string hash = null;
-			byte[] byteSourceText = asciiEnc.GetBytes(password);
-			MD5CryptoServiceProvider md5Hash = new MD5CryptoServiceProvider();
-			byte[] byteHash = md5Hash.ComputeHash(byteSourceText);
+            var byteSourceText = Encoding.ASCII.GetBytes(password);
+            var md5Hash = new MD5CryptoServiceProvider();
+            var byteHash = md5Hash.ComputeHash(byteSourceText);
 
-			foreach (byte b in byteHash)
-			{
-				hash += b.ToString("x2");
-			}
-
-			return hash;
-		}
+            return string.Concat(byteHash.Select(x => x.ToString("x2")));
+        }
     }
 }

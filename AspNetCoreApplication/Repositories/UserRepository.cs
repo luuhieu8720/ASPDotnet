@@ -24,9 +24,7 @@ namespace AspNetCoreApplication.Repositories
         {
             userForm.Password = userForm.Password.Encrypt();
 
-            await dataContext.Users.AddAsync(userForm.ConvertTo<User>());
-
-            await dataContext.SaveChangesAsync();
+            await base.Create(userForm);
         }
 
         public async Task Update(int id, UserForm userForm)
@@ -35,10 +33,7 @@ namespace AspNetCoreApplication.Repositories
                          throw new NotFoundException("User can't be found");
 
             userForm.Password = userForm.Password.Encrypt();
-            userForm.CopyTo(entry);
-            dataContext.Entry(entry).State = EntityState.Modified;
-
-            await dataContext.SaveChangesAsync();
+            await base.Update(id, userForm);
         }
     }
 }

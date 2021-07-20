@@ -37,12 +37,16 @@ namespace AspNetCoreApplication.Services
 
             var claims = new[]
             {
-                new Claim("Id",user.Id.ToString()),
-                new Claim("Role",user.Role.ToString()),
-                new Claim("Name",user.Name)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
+                new Claim(ClaimTypes.GivenName,user.Name),
+                new Claim(ClaimTypes.Upn, user.Username)
             };
 
-            var tokenString = new JwtSecurityToken(tokenConfig.Issuer, tokenConfig.Audience, claims);
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenConfig.Key));
+            var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+
+            var tokenString = new JwtSecurityToken(tokenConfig.Issuer, tokenConfig.Audience, claims: claims, signingCredentials: signingCredentials);
 
             return new TokenResponse()
             {
