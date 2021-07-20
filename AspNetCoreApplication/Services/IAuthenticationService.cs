@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AspNetCoreApplication.Config
+namespace AspNetCoreApplication.Services
 {
-    public interface IAuthentication
+    public interface IAuthenticationService
     {
         Task<TokenResponse> Login(string username, string password);
     }

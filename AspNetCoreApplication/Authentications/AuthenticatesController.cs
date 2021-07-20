@@ -1,4 +1,4 @@
-﻿using AspNetCoreApplication.Config;
+﻿using AspNetCoreApplication.Services;
 using AspNetCoreApplication.DTO.DTOUser;
 using AutoMapper.Configuration;
 using Microsoft.AspNetCore.Http;
@@ -13,9 +13,9 @@ namespace AspNetCoreApplication.Authentications
     [Route("api/auths")]
     public class AuthenticatesController : ControllerBase
     {
-        private readonly IAuthentication authentication;
+        private readonly IAuthenticationService authentication;
 
-        public AuthenticatesController(IAuthentication authentication)
+        public AuthenticatesController(IAuthenticationService authentication)
         {
             this.authentication = authentication;
         }

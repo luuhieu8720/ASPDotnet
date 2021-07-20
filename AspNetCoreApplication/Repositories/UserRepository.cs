@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : Repository<User>, IUserRepository
     {
         private readonly DataContext dataContext;
 
-        public UserRepository(DataContext dataContext)
+        public UserRepository(DataContext dataContext) : base(dataContext)
         {
             this.dataContext = dataContext;
         }

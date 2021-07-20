@@ -16,14 +16,11 @@ namespace AspNetCoreApplication.Controller
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly IRepository<User> userRepository;
+        private readonly IUserRepository userRepository;
 
-        private readonly IUserRepository repository;
-
-        public UsersController(IRepository<User> userRepository, IUserRepository repository)
+        public UsersController(IUserRepository repository)
         {
-            this.userRepository = userRepository;
-            this.repository = repository;
+            this.userRepository = repository;
         }
 
         [HttpGet]
@@ -33,13 +30,13 @@ namespace AspNetCoreApplication.Controller
         public async Task<UserDetail> Get(int id) => await userRepository.Get<UserDetail>(id);
 
         [HttpPost]
-        public async Task Add([FromBody] UserForm userForm) => await repository.Create(userForm);
+        public async Task Add([FromBody] UserForm userForm) => await userRepository.Create(userForm);
 
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await userRepository.Delete(id);
 
         [HttpPut("{id}")]
-        public async Task Update(int id, [FromBody] UserForm userForm) => await repository.Update(id, userForm);
+        public async Task Update(int id, [FromBody] UserForm userForm) => await userRepository.Update(id, userForm);
 
     }
 }

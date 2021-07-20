@@ -13,16 +13,17 @@ using AspNetCoreApplication.Authentications;
 using AspNetCoreApplication.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AspNetCoreApplication.Config;
 
-namespace AspNetCoreApplication.Config
+namespace AspNetCoreApplication.Services
 {
-    public class Authentication : IAuthentication
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly TokenConfig tokenConfig;
 
         private readonly DataContext dataContext;
 
-        public Authentication(TokenConfig tokenConfig, DataContext dataContext)
+        public AuthenticationService(TokenConfig tokenConfig, DataContext dataContext)
         {
             this.tokenConfig = tokenConfig;
             this.dataContext = dataContext;
@@ -30,9 +31,9 @@ namespace AspNetCoreApplication.Config
 
         public async Task<TokenResponse> Login(string username, string password)
         {
-            var user = await dataContext.Users.FirstOrDefaultAsync(x => x.Username == username && x.Password == password.Encrypt());
-
-            if (user == null) throw new UnauthorizedException("Sai tên đăng nhập hoặc mật khẩu");
+            var user = await dataContext.Users
+                            .FirstOrDefaultAsync(x => x.Username == username && x.Password == password.Encrypt())
+                           ?? throw new BadRequestExceptions("Sai tên đăng nhập hoặc mật khẩu");
 
             var claims = new[]
             {
@@ -42,12 +43,11 @@ namespace AspNetCoreApplication.Config
             };
 
             var tokenString = new JwtSecurityToken(tokenConfig.Issuer, tokenConfig.Audience, claims);
-            
-            var token = new TokenResponse();
 
-            token.Token = new JwtSecurityTokenHandler().WriteToken(tokenString);
-
-            return token;
+            return new TokenResponse()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(tokenString)
+            };
         }
     }
 }
