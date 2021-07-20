@@ -12,7 +12,7 @@ namespace AspNetCoreApplication.Extensions
     {
         private const string passwordKey = "USpsD7LaKc27gmYG9TZCDUGb3MnAZatQJSUdLp9MkLNkq4MAj5qRYZ7zLFZa";
 
-		public static string Encrypt(this string password)
+        public static string Encrypt(this string password)
         {
             password += passwordKey;
             var byteSourceText = Encoding.ASCII.GetBytes(password);
