@@ -1,5 +1,6 @@
 ﻿using AspNetCoreApplication.DTO.DTOUser;
 using AspNetCoreApplication.Exceptions;
+using AspNetCoreApplication.Extensions;
 using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
@@ -15,10 +16,11 @@ namespace AspNetCoreApplication.Controller
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly IRepository<User> userRepository;
-        public UsersController(IRepository<User> userRepository)
+        private readonly IUserRepository userRepository;
+
+        public UsersController(IUserRepository repository)
         {
-            this.userRepository = userRepository;
+            this.userRepository = repository;
         }
 
         [HttpGet]

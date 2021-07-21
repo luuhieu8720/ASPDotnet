@@ -1,8 +1,10 @@
+using AspNetCoreApplication.Authentications;
 using AspNetCoreApplication.Config;
 using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Handlings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
+using AspNetCoreApplication.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -46,7 +48,10 @@ namespace AspNetCoreApplication
             services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICloudinaryService, CloudinaryCloudService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IUserRepository, UserRepository>();
             ConfigType<ImageConfig>(services);
+            ConfigType<TokenConfig>(services);
         }
 
         private T ConfigType<T>(IServiceCollection services)

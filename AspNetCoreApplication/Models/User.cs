@@ -19,7 +19,7 @@ namespace AspNetCoreApplication.Models
         public DateTime? Birthday { get; set; }
 
         public DateTime LastOnline { get; set; }
-       
-        public Role Role{ get; set; }
+
+        public Role Role { get; set; }
     }
 }
