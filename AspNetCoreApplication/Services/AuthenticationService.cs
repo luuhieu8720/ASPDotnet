@@ -14,6 +14,10 @@ using AspNetCoreApplication.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AspNetCoreApplication.Config;
+using System.Security.Principal;
+using AspNetCoreApplication.DTO.DTOuser;
+using AspNetCoreApplication.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace AspNetCoreApplication.Services
 {
@@ -23,10 +27,13 @@ namespace AspNetCoreApplication.Services
 
         private readonly DataContext dataContext;
 
-        public AuthenticationService(TokenConfig tokenConfig, DataContext dataContext)
+        private readonly IHttpContextAccessor httpContextAccessor;
+
+        public AuthenticationService(TokenConfig tokenConfig, DataContext dataContext, IHttpContextAccessor httpContextAccessor)
         {
             this.tokenConfig = tokenConfig;
             this.dataContext = dataContext;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<TokenResponse> Login(string username, string password)
@@ -52,6 +59,36 @@ namespace AspNetCoreApplication.Services
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(tokenString)
             };
+        }
+        
+        public CurrentUser GetUserFromToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            var stringClaimValue = securityToken.Claims.First();
+            var currentUser = new CurrentUser()
+            {
+                Id = Convert.ToInt32(securityToken.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value),
+                Name = securityToken.Claims.First(claim => claim.Type == ClaimTypes.GivenName).Value,
+                Username = securityToken.Claims.First(claim => claim.Type == ClaimTypes.Upn).Value,
+                Role = securityToken.Claims.First(claim => claim.Type == ClaimTypes.Role).Value
+            };
+            return currentUser;
+        }
+        public async Task SetCurrentUser(string username, string password)
+        {
+            var currentUser = new CurrentUser();
+            var token = await Login(username, password);
+            if (token is TokenResponse)
+            {
+                currentUser = GetUserFromToken(token.Token);
+            }
+            httpContextAccessor.HttpContext.User = currentUser;
+        }
+        public ClaimsPrincipal GetCurrentUser()
+        {
+            return httpContextAccessor.HttpContext.User;
         }
     }
 }

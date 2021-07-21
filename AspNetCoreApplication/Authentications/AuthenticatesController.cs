@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCoreApplication.DTO.DTOuser;
+using System.Security.Claims;
 
 namespace AspNetCoreApplication.Authentications
 {
@@ -22,6 +24,5 @@ namespace AspNetCoreApplication.Authentications
 
         [HttpPost]
         public async Task<TokenResponse> Post(string username, string password) => await authentication.Login(username, password);
-
     }
 }

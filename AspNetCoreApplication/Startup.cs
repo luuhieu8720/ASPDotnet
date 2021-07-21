@@ -50,6 +50,7 @@ namespace AspNetCoreApplication
             services.AddScoped<ICloudinaryService, CloudinaryCloudService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddHttpContextAccessor();
             ConfigType<ImageConfig>(services);
             ConfigType<TokenConfig>(services);
         }
