@@ -14,6 +14,8 @@ using AspNetCoreApplication.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AspNetCoreApplication.Config;
+using AspNetCoreApplication.DTO.DTOuser;
+using Microsoft.AspNetCore.Http;
 
 namespace AspNetCoreApplication.Services
 {
@@ -23,10 +25,24 @@ namespace AspNetCoreApplication.Services
 
         private readonly DataContext dataContext;
 
-        public AuthenticationService(TokenConfig tokenConfig, DataContext dataContext)
+        private readonly IHttpContextAccessor httpContextAccessor;
+
+        public AuthenticationService(TokenConfig tokenConfig, DataContext dataContext, IHttpContextAccessor httpContextAccessor)
         {
             this.tokenConfig = tokenConfig;
             this.dataContext = dataContext;
+            this.httpContextAccessor = httpContextAccessor;
+        }
+
+        public AuthenUser Get()
+        {
+            return new AuthenUser()
+            {
+                Id = httpContextAccessor.HttpContext.User.GetUserId(),
+                Name = httpContextAccessor.HttpContext.User.GetName(),
+                Username = httpContextAccessor.HttpContext.User.GetUsername(),
+                Role = httpContextAccessor.HttpContext.User.GetRole()
+            };
         }
 
         public async Task<TokenResponse> Login(string username, string password)

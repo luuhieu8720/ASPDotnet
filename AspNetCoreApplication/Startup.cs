@@ -5,8 +5,11 @@ using AspNetCoreApplication.Handlings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
 using AspNetCoreApplication.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +17,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace AspNetCoreApplication
@@ -38,7 +45,6 @@ namespace AspNetCoreApplication
                 options => options.UseSqlServer("name=ConnectionStrings:Connection")
             );
             services.AddControllers();
-            services.AddMvc(ConfigMvc);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AspNetCoreApplication", Version = "v1" });
@@ -48,8 +54,22 @@ namespace AspNetCoreApplication
             services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICloudinaryService, CloudinaryCloudService>();
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<Services.IAuthenticationService, Services.AuthenticationService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("USpsD7LaKc27gmYG9TZCDUGb3MnAZatQJSUdLp9MkLNkq4MAj5qRYZ7zLFZa")),
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = false,
+                };
+            });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             ConfigType<ImageConfig>(services);
             ConfigType<TokenConfig>(services);
         }
@@ -81,7 +101,18 @@ namespace AspNetCoreApplication
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
+            app.Use(async (context, next) =>
+            {
+                var authenticateInfo = await context.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+                var bearerTokenIdentity = authenticateInfo?.Principal;
+                if (bearerTokenIdentity?.Identity is ClaimsIdentity identity)
+                {
+                    context.User = new UserClaimsPrincipal(identity);
+                }
+
+                await next.Invoke();
+            });
 
             app.UseAuthorization();
 

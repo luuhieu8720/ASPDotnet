@@ -4,6 +4,7 @@ using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Controller
 {
+    [Authorize]
     [Route("api/books")]
     public class BooksController : ControllerBase
     {
