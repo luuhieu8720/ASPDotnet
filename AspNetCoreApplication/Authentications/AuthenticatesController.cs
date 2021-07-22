@@ -25,6 +25,6 @@ namespace AspNetCoreApplication.Authentications
         public async Task<TokenResponse> Post(string username, string password) => await authentication.Login(username, password);
 
         [HttpGet]
-        public AuthenUser Get() => authentication.Get();
+        public UserClaimsPrincipal Get() => authentication.GetCurrentUser();
     }
 }

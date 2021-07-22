@@ -34,15 +34,9 @@ namespace AspNetCoreApplication.Services
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public AuthenUser Get()
+        public UserClaimsPrincipal GetCurrentUser()
         {
-            return new AuthenUser()
-            {
-                Id = httpContextAccessor.HttpContext.User.GetUserId(),
-                Name = httpContextAccessor.HttpContext.User.GetName(),
-                Username = httpContextAccessor.HttpContext.User.GetUsername(),
-                Role = httpContextAccessor.HttpContext.User.GetRole()
-            };
+            return (UserClaimsPrincipal)httpContextAccessor.HttpContext.User;
         }
 
         public async Task<TokenResponse> Login(string username, string password)

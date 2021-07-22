@@ -27,9 +27,9 @@ namespace AspNetCoreApplication.Services
             };
             options.SaveToken = true;
         }
-        public static void ConfigSecurity(this IServiceCollection services)
+        public static void ConfigSecurity(this IServiceCollection services, TokenConfig tokenConfig)
         {
-            var key = Encoding.ASCII.GetBytes("USpsD7LaKc27gmYG9TZCDUGb3MnAZatQJSUdLp9MkLNkq4MAj5qRYZ7zLFZa");
+            var key = Encoding.ASCII.GetBytes(tokenConfig.Key);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => SetJwtOption(options, key));
         }
