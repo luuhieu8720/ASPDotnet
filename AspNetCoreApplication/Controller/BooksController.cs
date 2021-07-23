@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Controller
 {
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     [Route("api/books")]
     public class BooksController : ControllerBase
     {

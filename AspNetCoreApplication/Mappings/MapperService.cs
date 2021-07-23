@@ -35,6 +35,7 @@ namespace AspNetCoreApplication.Mappings
             cfg.CreateMap<Book, BookItem>();
             cfg.CreateMap<BookForm, Book>();
             cfg.CreateMap<Book, BookDetail>();
+            cfg.CreateMap<string, Role>();
         }
 
         public static T ConvertTo<T>(this object source)

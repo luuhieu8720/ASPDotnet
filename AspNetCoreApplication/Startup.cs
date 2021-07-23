@@ -44,7 +44,9 @@ namespace AspNetCoreApplication
             services.AddDbContext<DataContext>(
                 options => options.UseSqlServer("name=ConnectionStrings:Connection")
             );
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(x =>
+            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            services.AddMvc(ConfigMvc);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AspNetCoreApplication", Version = "v1" });
@@ -56,22 +58,14 @@ namespace AspNetCoreApplication
             services.AddScoped<ICloudinaryService, CloudinaryCloudService>();
             services.AddScoped<Services.IAuthenticationService, Services.AuthenticationService>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("USpsD7LaKc27gmYG9TZCDUGb3MnAZatQJSUdLp9MkLNkq4MAj5qRYZ7zLFZa")),
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = false,
-                };
-            });
+            services.AddMvc(ConfigMvc);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             ConfigType<ImageConfig>(services);
-            ConfigType<TokenConfig>(services);
+            var tokenConfig = ConfigType<TokenConfig>(services);
+
+            services.ConfigSecurity(tokenConfig);
+            services.AddSingleton<TokenProviderMiddleware>();
         }
 
         private T ConfigType<T>(IServiceCollection services)
@@ -102,17 +96,7 @@ namespace AspNetCoreApplication
 
             app.UseRouting();
 
-            app.Use(async (context, next) =>
-            {
-                var authenticateInfo = await context.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
-                var bearerTokenIdentity = authenticateInfo?.Principal;
-                if (bearerTokenIdentity?.Identity is ClaimsIdentity identity)
-                {
-                    context.User = new UserClaimsPrincipal(identity);
-                }
-
-                await next.Invoke();
-            });
+            app.UseMiddleware<TokenProviderMiddleware>();
 
             app.UseAuthorization();
 

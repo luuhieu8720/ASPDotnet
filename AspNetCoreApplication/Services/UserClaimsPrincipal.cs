@@ -6,6 +6,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
+using AspNetCoreApplication.Extensions;
+using AspNetCoreApplication.Mappings;
 
 namespace AspNetCoreApplication.Services
 {
@@ -16,10 +18,10 @@ namespace AspNetCoreApplication.Services
         {
             AuthenUser = new AuthenUser()
             {
-                Username = claimsIdentity.Claims.First(claim => claim.Type == ClaimTypes.Upn).Value,
-                Name = claimsIdentity.Claims.First(claim => claim.Type == ClaimTypes.GivenName).Value,
-                Id = claimsIdentity.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value,
-                Role = claimsIdentity.Claims.First(claim => claim.Type == ClaimTypes.Role).Value
+                Username = claimsIdentity.GetClaimValue(ClaimTypes.Upn),
+                Name = claimsIdentity.GetClaimValue(ClaimTypes.GivenName),
+                Id = claimsIdentity.GetClaimValue(ClaimTypes.NameIdentifier),
+                Role = claimsIdentity.GetClaimValue(ClaimTypes.Role).ConvertTo<Role>()
             };
         }
     }
