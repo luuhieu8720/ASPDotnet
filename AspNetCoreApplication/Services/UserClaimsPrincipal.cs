@@ -16,13 +16,7 @@ namespace AspNetCoreApplication.Services
         public AuthenUser AuthenUser { get; private set; }
         public UserClaimsPrincipal(ClaimsIdentity claimsIdentity) : base(claimsIdentity)
         {
-            AuthenUser = new AuthenUser()
-            {
-                Username = claimsIdentity.GetClaimValue(ClaimTypes.Upn),
-                Name = claimsIdentity.GetClaimValue(ClaimTypes.GivenName),
-                Id = claimsIdentity.GetClaimValue(ClaimTypes.NameIdentifier),
-                Role = claimsIdentity.GetClaimValue(ClaimTypes.Role).ConvertTo<Role>()
-            };
+            AuthenUser = new AuthenUser(claimsIdentity);
         }
     }
 }

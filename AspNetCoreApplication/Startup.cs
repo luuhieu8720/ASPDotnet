@@ -65,7 +65,6 @@ namespace AspNetCoreApplication
             var tokenConfig = ConfigType<TokenConfig>(services);
 
             services.ConfigSecurity(tokenConfig);
-            services.AddSingleton<TokenProviderMiddleware>();
         }
 
         private T ConfigType<T>(IServiceCollection services)

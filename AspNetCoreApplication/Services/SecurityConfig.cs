@@ -27,6 +27,7 @@ namespace AspNetCoreApplication.Services
             };
             options.SaveToken = true;
         }
+
         public static void ConfigSecurity(this IServiceCollection services, TokenConfig tokenConfig)
         {
             var key = Encoding.ASCII.GetBytes(tokenConfig.Key);
