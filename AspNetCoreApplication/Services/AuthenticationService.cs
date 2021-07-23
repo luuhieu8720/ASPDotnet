@@ -45,13 +45,7 @@ namespace AspNetCoreApplication.Services
                             .FirstOrDefaultAsync(x => x.Username == username && x.Password == password.Encrypt())
                            ?? throw new BadRequestExceptions("Sai tên đăng nhập hoặc mật khẩu");
 
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
-                new Claim(ClaimTypes.GivenName,user.Name),
-                new Claim(ClaimTypes.Upn, user.Username)
-            };
+            var claims = new AuthenUser(user).GetClaims();
 
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenConfig.Key));
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);

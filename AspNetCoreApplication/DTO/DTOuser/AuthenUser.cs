@@ -45,7 +45,13 @@ namespace AspNetCoreApplication.DTO.DTOuser
 
         public Claim[] GetClaims()
         {
-            return httpContextAccessor.HttpContext.User.Claims.ToArray();
+            var claims = new[] {
+                new Claim(ClaimTypes.NameIdentifier, Id.ToString()),
+                new Claim(ClaimTypes.Role, Role.ToString()),
+                new Claim(ClaimTypes.GivenName, Name),
+                new Claim(ClaimTypes.Upn, Username)
+            };
+            return claims;
         }
     }
 }
