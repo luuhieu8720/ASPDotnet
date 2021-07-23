@@ -1,5 +1,7 @@
 ﻿using AspNetCoreApplication.Extensions;
 using AspNetCoreApplication.Models;
+using AspNetCoreApplication.Services;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,13 @@ namespace AspNetCoreApplication.DTO.DTOuser
 {
     public class AuthenUser
     {
+        private readonly IHttpContextAccessor httpContextAccessor;
+
+        public AuthenUser(IHttpContextAccessor httpContextAccessor)
+        {
+            this.httpContextAccessor = httpContextAccessor;
+        }
+
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -32,6 +41,11 @@ namespace AspNetCoreApplication.DTO.DTOuser
             Name = claimsIdentity.GetClaimValue(ClaimTypes.GivenName);
             Username = claimsIdentity.GetClaimValue(ClaimTypes.Upn);
             Role = claimsIdentity.GetClaimValue(ClaimTypes.Role).ToEnum<Role>();
+        }
+
+        public Claim[] GetClaims()
+        {
+            return httpContextAccessor.HttpContext.User.Claims.ToArray();
         }
     }
 }
