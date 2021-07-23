@@ -7,21 +7,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCoreApplication.DTO.DTOuser;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspNetCoreApplication.Authentications
 {
     [Route("api/auths")]
     public class AuthenticatesController : ControllerBase
     {
-        private readonly IAuthenticationService authentication;
+        private readonly IAuthenticationService authenticationService;
 
-        public AuthenticatesController(IAuthenticationService authentication)
+        public AuthenticatesController(IAuthenticationService authenticationService)
         {
-            this.authentication = authentication;
+            this.authenticationService = authenticationService;
         }
 
         [HttpPost]
-        public async Task<TokenResponse> Post(string username, string password) => await authentication.Login(username, password);
+        public async Task<TokenResponse> Post(string username, string password) => await authenticationService.Login(username, password);
 
+        [HttpGet]
+        [Authorize]
+        public AuthenUser Get() => authenticationService.GetCurrentUser();
     }
 }

@@ -14,6 +14,8 @@ using AspNetCoreApplication.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AspNetCoreApplication.Config;
+using AspNetCoreApplication.DTO.DTOuser;
+using Microsoft.AspNetCore.Http;
 
 namespace AspNetCoreApplication.Services
 {
@@ -23,10 +25,18 @@ namespace AspNetCoreApplication.Services
 
         private readonly DataContext dataContext;
 
-        public AuthenticationService(TokenConfig tokenConfig, DataContext dataContext)
+        private readonly IHttpContextAccessor httpContextAccessor;
+
+        public AuthenticationService(TokenConfig tokenConfig, DataContext dataContext, IHttpContextAccessor httpContextAccessor)
         {
             this.tokenConfig = tokenConfig;
             this.dataContext = dataContext;
+            this.httpContextAccessor = httpContextAccessor;
+        }
+
+        public AuthenUser GetCurrentUser()
+        {
+            return ((UserClaimsPrincipal)httpContextAccessor.HttpContext.User).AuthenUser;
         }
 
         public async Task<TokenResponse> Login(string username, string password)
@@ -35,13 +45,7 @@ namespace AspNetCoreApplication.Services
                             .FirstOrDefaultAsync(x => x.Username == username && x.Password == password.Encrypt())
                            ?? throw new BadRequestExceptions("Sai tên đăng nhập hoặc mật khẩu");
 
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
-                new Claim(ClaimTypes.GivenName,user.Name),
-                new Claim(ClaimTypes.Upn, user.Username)
-            };
+            var claims = new AuthenUser(user).GetClaims();
 
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenConfig.Key));
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);

@@ -5,8 +5,11 @@ using AspNetCoreApplication.Handlings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
 using AspNetCoreApplication.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +17,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace AspNetCoreApplication
@@ -37,7 +44,8 @@ namespace AspNetCoreApplication
             services.AddDbContext<DataContext>(
                 options => options.UseSqlServer("name=ConnectionStrings:Connection")
             );
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(x =>
+            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddMvc(ConfigMvc);
             services.AddSwaggerGen(c =>
             {
@@ -48,10 +56,15 @@ namespace AspNetCoreApplication
             services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICloudinaryService, CloudinaryCloudService>();
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<Services.IAuthenticationService, Services.AuthenticationService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddMvc(ConfigMvc);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             ConfigType<ImageConfig>(services);
-            ConfigType<TokenConfig>(services);
+            var tokenConfig = ConfigType<TokenConfig>(services);
+
+            services.ConfigSecurity(tokenConfig);
         }
 
         private T ConfigType<T>(IServiceCollection services)
@@ -81,7 +94,8 @@ namespace AspNetCoreApplication
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
+            app.UseMiddleware<TokenProviderMiddleware>();
 
             app.UseAuthorization();
 

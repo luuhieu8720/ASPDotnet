@@ -4,6 +4,7 @@ using AspNetCoreApplication.Filter;
 using AspNetCoreApplication.Mappings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
