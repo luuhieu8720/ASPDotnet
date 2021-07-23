@@ -12,13 +12,6 @@ namespace AspNetCoreApplication.DTO.DTOuser
 {
     public class AuthenUser
     {
-        private readonly IHttpContextAccessor httpContextAccessor;
-
-        public AuthenUser(IHttpContextAccessor httpContextAccessor)
-        {
-            this.httpContextAccessor = httpContextAccessor;
-        }
-
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -45,13 +38,12 @@ namespace AspNetCoreApplication.DTO.DTOuser
 
         public Claim[] GetClaims()
         {
-            var claims = new[] {
+            return new[] {
                 new Claim(ClaimTypes.NameIdentifier, Id.ToString()),
                 new Claim(ClaimTypes.Role, Role.ToString()),
                 new Claim(ClaimTypes.GivenName, Name),
                 new Claim(ClaimTypes.Upn, Username)
             };
-            return claims;
         }
     }
 }
