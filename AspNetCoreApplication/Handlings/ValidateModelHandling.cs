@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace AspNetCoreApplication.Filter
+namespace AspNetCoreApplication.Handlings
 {
-    public class ValidateModel : ActionFilterAttribute
+    public class ValidateModelHandling : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -20,7 +20,7 @@ namespace AspNetCoreApplication.Filter
                 
                 var errorMessage = errors.Select(x => x.ErrorMessage).FirstOrDefault();
 
-                throw new BadRequestExceptions(errorMessage);
+                throw new BadRequestException(errorMessage);
             }
         }
     }

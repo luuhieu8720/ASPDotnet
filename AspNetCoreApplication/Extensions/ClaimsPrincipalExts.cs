@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Extensions
 {
-    public static class ClaimsPrincipalExtensions
+    public static class ClaimsPrincipalExts
     {
         public static string GetClaimValue(this ClaimsIdentity claimsIdentity, string claimType)
         {

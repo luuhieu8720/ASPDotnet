@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AspNetCoreApplication.Config
+namespace AspNetCoreApplication.Services
 {
     public interface ICloudinaryService
     {

@@ -1,5 +1,5 @@
 ﻿using AspNetCoreApplication.Exceptions;
-using AspNetCoreApplication.Mappings;
+using AspNetCoreApplication.Services;
 using AspNetCoreApplication.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;

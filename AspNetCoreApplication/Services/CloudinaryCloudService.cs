@@ -1,4 +1,5 @@
-﻿using CloudinaryDotNet;
+﻿using AspNetCoreApplication.Config;
+using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AspNetCoreApplication.Config
+namespace AspNetCoreApplication.Services
 {
     public class CloudinaryCloudService : ICloudinaryService
     {

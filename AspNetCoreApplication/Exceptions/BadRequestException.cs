@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Exceptions
 {
-    public class BadRequestExceptions : BaseException
+    public class BadRequestException : BaseException
     {
-        public BadRequestExceptions(string message) :
+        public BadRequestException(string message) :
             base(HttpStatusCode.BadRequest, message)
         {
 

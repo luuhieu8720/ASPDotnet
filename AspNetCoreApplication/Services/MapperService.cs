@@ -14,7 +14,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 
-namespace AspNetCoreApplication.Mappings
+namespace AspNetCoreApplication.Services
 {
     public static class MapperService
     {

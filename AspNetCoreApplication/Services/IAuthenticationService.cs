@@ -1,4 +1,4 @@
-﻿using AspNetCoreApplication.Authentications;
+﻿using AspNetCoreApplication.DTO.DTOAuths;
 using AspNetCoreApplication.DTO.DTOuser;
 using AspNetCoreApplication.DTO.DTOUser;
 using System;

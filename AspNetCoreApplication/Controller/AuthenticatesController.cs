@@ -9,8 +9,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreApplication.DTO.DTOuser;
 using Microsoft.AspNetCore.Authorization;
+using AspNetCoreApplication.DTO.DTOAuths;
 
-namespace AspNetCoreApplication.Authentications
+namespace AspNetCoreApplication.Controller
 {
     [Route("api/auths")]
     public class AuthenticatesController : ControllerBase
