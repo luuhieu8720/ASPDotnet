@@ -11,6 +11,6 @@ namespace AspNetCoreApplication.Services
     public interface IAuthenticationService
     {
         Task<TokenResponse> Login(string username, string password);
-        UserClaimsPrincipal GetCurrentUser();
+        AuthenUser GetCurrentUser();
     }
 }
