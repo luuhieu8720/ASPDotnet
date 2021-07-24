@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
 using AspNetCoreApplication.Extensions;
-using AspNetCoreApplication.Mappings;
+using AspNetCoreApplication.Services;
 
 namespace AspNetCoreApplication.Services
 {

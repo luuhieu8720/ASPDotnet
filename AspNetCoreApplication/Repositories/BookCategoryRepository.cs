@@ -33,7 +33,7 @@ namespace AspNetCoreApplication.Repositories
             }
             catch
             {
-                throw new BadRequestExceptions("Bad request");
+                throw new BadRequestException("Bad request");
             }
 
         }

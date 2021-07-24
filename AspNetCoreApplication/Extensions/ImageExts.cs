@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Extensions
 {
-    public static class ImageExtension
+    public static class ImageExts
     {
         public static byte[] ImageToByteArray(this Image image)
         {

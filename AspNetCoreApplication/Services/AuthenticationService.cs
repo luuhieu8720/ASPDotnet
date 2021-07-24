@@ -9,13 +9,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.IdentityModel.JsonWebTokens;
-using AspNetCoreApplication.Authentications;
 using AspNetCoreApplication.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AspNetCoreApplication.Config;
 using AspNetCoreApplication.DTO.DTOuser;
 using Microsoft.AspNetCore.Http;
+using AspNetCoreApplication.DTO.DTOAuths;
 
 namespace AspNetCoreApplication.Services
 {
@@ -43,7 +43,7 @@ namespace AspNetCoreApplication.Services
         {
             var user = await dataContext.Users
                             .FirstOrDefaultAsync(x => x.Username == username && x.Password == password.Encrypt())
-                           ?? throw new BadRequestExceptions("Sai tên đăng nhập hoặc mật khẩu");
+                           ?? throw new BadRequestException("Sai tên đăng nhập hoặc mật khẩu");
 
             var claims = new AuthenUser(user).GetClaims();
 

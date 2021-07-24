@@ -13,7 +13,7 @@ using System.Configuration;
 using Microsoft.Web.Administration;
 using Microsoft.Extensions.Options;
 using AutoMapper.Configuration;
-using AspNetCoreApplication.Config;
+using AspNetCoreApplication.Services;
 using System.Text.RegularExpressions;
 using System.Drawing.Imaging;
 using AspNetCoreApplication.Extensions;
