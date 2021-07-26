@@ -46,6 +46,14 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Update(int id, BookForm source)
         {
+            var currentUser = GetCurrentUser();
+            var bookDetail = base.GetByIdOrThrow(id);
+            if ((!currentUser.Role.ToString().Equals("Manager"))
+                && bookDetail.GetAwaiter().GetResult().AuthorId != currentUser.Id)
+            {
+                throw new UnauthorizedException("Không có quyền truy cập");
+            }
+
             source.Cover = await CheckForUploading(source.Cover);
 
             await base.Update(id, source);
@@ -91,23 +99,10 @@ namespace AspNetCoreApplication.Repositories
                 .ToListAsync();
         }
 
-        public Task<BookDetail> Get(int id)
-        {
-            var currentUser = GetCurrentUser();
-            var bookDetail = base.Get<BookDetail>(id);
-            if (!currentUser.Role.ToString().Equals("Manager") 
-                && bookDetail.GetAwaiter().GetResult().AuthorId != currentUser.Id)
-            {
-                throw new UnauthorizedException("Không có quyền truy cập");
-            }
-            return bookDetail;
-        }
-
         public AuthenUser GetCurrentUser()
         {
             return ((UserClaimsPrincipal)httpContextAccessor.HttpContext.User)
                 .AuthenUser;
         }
-
     }
 }

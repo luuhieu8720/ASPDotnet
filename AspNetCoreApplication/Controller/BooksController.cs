@@ -26,20 +26,22 @@ namespace AspNetCoreApplication.Controller
             this.bookRepository = bookRepository;
             this.bookCategoryRepository = bookCategoryRepository;
         }
-        [Authorize(Roles = "Manager")]
+
         [HttpGet]
         public async Task<List<BookItem>> Get() => await bookRepository.Get<BookItem>();
 
-        [Authorize(Roles = "Manager, Contributor")]
         [HttpGet("{id}")]
         public async Task<BookDetail> Get(int id) => await bookRepository.Get<BookDetail>(id);
 
+        [Authorize(Roles = "Contributor")]
         [HttpPost]
         public async Task Add([FromBody] BookForm bookForm) => await bookRepository.Create(bookForm);
 
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await bookRepository.Delete(id);
 
+        [Authorize(Roles = "Contributor")]
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] BookForm bookForm) => await bookRepository.Update(id, bookForm);
         
