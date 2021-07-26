@@ -18,6 +18,8 @@ using System.Text.RegularExpressions;
 using System.Drawing.Imaging;
 using AspNetCoreApplication.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using AspNetCoreApplication.DTO.DTOuser;
 
 namespace AspNetCoreApplication.Repositories
 {
@@ -25,12 +27,15 @@ namespace AspNetCoreApplication.Repositories
     {
         private readonly ICloudinaryService cloudService;
 
+        private readonly IHttpContextAccessor httpContextAccessor;
+
         private readonly DataContext dataContext;
 
-        public BookRepository(DataContext dataContext, ICloudinaryService cloudService) : base(dataContext)
+        public BookRepository(DataContext dataContext, ICloudinaryService cloudService, IHttpContextAccessor httpContextAccessor) : base(dataContext)
         {
             this.cloudService = cloudService;
             this.dataContext = dataContext;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task Create(BookForm source)
@@ -84,6 +89,24 @@ namespace AspNetCoreApplication.Repositories
                 .Where(x => x.Id == bookId)
                 .SelectMany(x => x.Categories.Select(y => y.Category))
                 .ToListAsync();
+        }
+
+        public Task<BookDetail> Get(int id)
+        {
+            var currentUser = GetCurrentUser();
+            var bookDetail = base.Get<BookDetail>(id);
+            if (!currentUser.Role.ToString().Equals("Manager") 
+                && bookDetail.GetAwaiter().GetResult().AuthorId != currentUser.Id)
+            {
+                throw new UnauthorizedException("Không có quyền truy cập");
+            }
+            return bookDetail;
+        }
+
+        public AuthenUser GetCurrentUser()
+        {
+            return ((UserClaimsPrincipal)httpContextAccessor.HttpContext.User)
+                .AuthenUser;
         }
 
     }
