@@ -24,13 +24,11 @@ namespace AspNetCoreApplication.Controller
             this.userRepository = repository;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<List<UserItem>> Get() => await userRepository.Get<UserItem>();
 
-        [Authorize]
         [HttpGet("{id}")]
-        public async Task<UserDetail> Get(int id) => await userRepository.Get(id);
+        public async Task<UserDetail> Get(int id) => await userRepository.Get<UserDetail>(id);
 
         [HttpPost]
         public async Task Add([FromBody] UserForm userForm) => await userRepository.Create(userForm);

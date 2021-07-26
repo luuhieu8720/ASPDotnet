@@ -11,6 +11,5 @@ namespace AspNetCoreApplication.Repositories
     {
         Task Create(UserForm userForm);
         Task Update(int id, UserForm userForm);
-        Task<UserDetail> Get(int id);
     }
 }
