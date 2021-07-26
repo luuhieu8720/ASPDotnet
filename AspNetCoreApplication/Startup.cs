@@ -42,8 +42,7 @@ namespace AspNetCoreApplication
             services.AddDbContext<DataContext>(
                 options => options.UseSqlServer("name=ConnectionStrings:Connection")
             );
-            services.AddControllers().AddJsonOptions(x =>
-            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            services.AddControllers();
             services.AddMvc(ConfigMvc);
             services.AddSwaggerGen(c =>
             {
