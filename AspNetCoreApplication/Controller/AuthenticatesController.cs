@@ -28,6 +28,6 @@ namespace AspNetCoreApplication.Controller
 
         [HttpGet]
         [Authorize]
-        public AuthenUser Get() => authenticationService.GetCurrentUser();
+        public AuthenUser Get() => authenticationService.CurrentUser;
     }
 }
