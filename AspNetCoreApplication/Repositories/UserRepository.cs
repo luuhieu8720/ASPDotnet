@@ -15,15 +15,11 @@ namespace AspNetCoreApplication.Repositories
 {
     public class UserRepository : Repository<User>, IUserRepository
     {
-        private readonly IHttpContextAccessor httpContextAccessor;
-
         private readonly IAuthenticationService authenticationService;
 
-        public UserRepository(DataContext dataContext, 
-            IHttpContextAccessor httpContextAccessor,
+        public UserRepository(DataContext dataContext,
             IAuthenticationService authenticationService) : base(dataContext)
         {
-            this.httpContextAccessor = httpContextAccessor;
             this.authenticationService = authenticationService;
         }
 

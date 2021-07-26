@@ -27,15 +27,17 @@ namespace AspNetCoreApplication.Repositories
     {
         private readonly ICloudinaryService cloudService;
 
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IAuthenticationService authenticationService;
 
         private readonly DataContext dataContext;
 
-        public BookRepository(DataContext dataContext, ICloudinaryService cloudService, IHttpContextAccessor httpContextAccessor) : base(dataContext)
+        public BookRepository(DataContext dataContext, 
+            ICloudinaryService cloudService, 
+            IAuthenticationService authenticationService) : base(dataContext)
         {
             this.cloudService = cloudService;
             this.dataContext = dataContext;
-            this.httpContextAccessor = httpContextAccessor;
+            this.authenticationService = authenticationService;
         }
 
         public async Task Create(BookForm source)
@@ -46,9 +48,10 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Update(int id, BookForm source)
         {
-            var currentUser = GetCurrentUser();
+            var currentUser = authenticationService.CurrentUser;
             var bookDetail = base.GetByIdOrThrow(id);
-            if ((!currentUser.Role.ToString().Equals("Manager"))
+            if ((!currentUser.Role.ToString().Equals("Admin"))
+                || (!currentUser.Role.ToString().Equals("Manager"))
                 && bookDetail.GetAwaiter().GetResult().AuthorId != currentUser.Id)
             {
                 throw new UnauthorizedException("Không có quyền truy cập");
@@ -99,10 +102,17 @@ namespace AspNetCoreApplication.Repositories
                 .ToListAsync();
         }
 
-        public AuthenUser GetCurrentUser()
+        public async Task DeleteBook(int id)
         {
-            return ((UserClaimsPrincipal)httpContextAccessor.HttpContext.User)
-                .AuthenUser;
+            var currentUser = authenticationService.CurrentUser;
+            var bookDetail = base.GetByIdOrThrow(id);
+            if ((!currentUser.Role.ToString().Equals("Admin"))
+                || (!currentUser.Role.ToString().Equals("Manager"))
+                && bookDetail.GetAwaiter().GetResult().AuthorId != currentUser.Id)
+            {
+                throw new UnauthorizedException("Không có quyền truy cập");
+            }
+            await base.Delete(id);
         }
     }
 }

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspNetCoreApplication.Controller
 {
@@ -30,12 +31,15 @@ namespace AspNetCoreApplication.Controller
         [HttpGet("{id}")]
         public async Task<AuthorDetail> Get(int id) => await authorRepository.Get<AuthorDetail>(id);
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task Add([FromBody] AuthorForm authorForm) => await authorRepository.Create(authorForm);
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await authorRepository.Delete(id);
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] AuthorForm authorForm) => await authorRepository.Update(id, authorForm);
     }
