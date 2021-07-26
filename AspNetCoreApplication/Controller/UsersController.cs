@@ -4,6 +4,7 @@ using AspNetCoreApplication.Extensions;
 using AspNetCoreApplication.Handlings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
@@ -32,9 +33,11 @@ namespace AspNetCoreApplication.Controller
         [HttpPost]
         public async Task Add([FromBody] UserForm userForm) => await userRepository.Create(userForm);
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task Delete(int id) => await userRepository.Delete(id);
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] UserForm userForm) => await userRepository.Update(id, userForm);
 

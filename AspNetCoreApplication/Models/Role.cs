@@ -8,7 +8,7 @@ namespace AspNetCoreApplication.Models
     public enum Role
     {
         Contributor = 1,
-            Manager = 2,
-            Admin = 3
+        Manager = 2,
+        Admin = 3
     }
 }
