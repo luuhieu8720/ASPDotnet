@@ -45,6 +45,7 @@ namespace AspNetCoreApplication.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastOnline = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false)
@@ -78,7 +79,7 @@ namespace AspNetCoreApplication.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookCategory",
+                name: "BookCategories",
                 columns: table => new
                 {
                     BooksId = table.Column<int>(type: "int", nullable: false),
@@ -86,15 +87,15 @@ namespace AspNetCoreApplication.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookCategory", x => new { x.BooksId, x.CategoriesId });
+                    table.PrimaryKey("PK_BookCategories", x => new { x.BooksId, x.CategoriesId });
                     table.ForeignKey(
-                        name: "FK_BookCategory_Books_BooksId",
+                        name: "FK_BookCategories_Books_BooksId",
                         column: x => x.BooksId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookCategory_Categories_CategoriesId",
+                        name: "FK_BookCategories_Categories_CategoriesId",
                         column: x => x.CategoriesId,
                         principalTable: "Categories",
                         principalColumn: "Id",
@@ -102,8 +103,8 @@ namespace AspNetCoreApplication.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookCategory_CategoriesId",
-                table: "BookCategory",
+                name: "IX_BookCategories_CategoriesId",
+                table: "BookCategories",
                 column: "CategoriesId");
 
             migrationBuilder.CreateIndex(
@@ -115,7 +116,7 @@ namespace AspNetCoreApplication.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookCategory");
+                name: "BookCategories");
 
             migrationBuilder.DropTable(
                 name: "Users");
