@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
 using System.Threading.Tasks;
 using AspNetCoreApplication.Exceptions;
 using System.IO;
@@ -50,8 +48,8 @@ namespace AspNetCoreApplication.Repositories
         {
             var currentUser = authenticationService.CurrentUser;
             var bookDetail = base.GetByIdOrThrow(id);
-            if ((!currentUser.Role.ToString().Equals("Admin"))
-                || (!currentUser.Role.ToString().Equals("Manager"))
+            if (currentUser.Role != "Admin".ToEnum<Role>()
+                || (currentUser.Role != "Manager".ToEnum<Role>())
                 && bookDetail.GetAwaiter().GetResult().AuthorId != currentUser.Id)
             {
                 throw new UnauthorizedException("Không có quyền truy cập");
@@ -102,7 +100,7 @@ namespace AspNetCoreApplication.Repositories
                 .ToListAsync();
         }
 
-        public async Task DeleteBook(int id)
+        public new async Task Delete(int id)
         {
             var currentUser = authenticationService.CurrentUser;
             var bookDetail = base.GetByIdOrThrow(id);
@@ -114,5 +112,6 @@ namespace AspNetCoreApplication.Repositories
             }
             await base.Delete(id);
         }
+
     }
 }

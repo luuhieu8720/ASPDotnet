@@ -39,7 +39,7 @@ namespace AspNetCoreApplication.Controller
 
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task Delete(int id) => await bookRepository.DeleteBook(id);
+        public async Task Delete(int id) => await bookRepository.Delete(id);
 
         [Authorize]
         [HttpPut("{id}")]
