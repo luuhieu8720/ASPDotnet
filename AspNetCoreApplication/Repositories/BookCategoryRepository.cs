@@ -15,22 +15,18 @@ namespace AspNetCoreApplication.Repositories
     {
         private readonly DataContext dataContext;
 
-        private readonly IAuthenticationService authenticationService;
-
         private readonly IBookRepository bookRepository;
 
         public BookCategoryRepository(DataContext dataContext, 
-            IAuthenticationService authenticationService,
             IBookRepository bookRepository)
         {
             this.dataContext = dataContext;
-            this.authenticationService = authenticationService;
             this.bookRepository = bookRepository;
         }
 
         public async Task Add(int bookId, int categoryId)
         {
-            await CheckRole(bookId);
+            await bookRepository.CheckRole(bookId);
             var bookCategory = new BookCategory
             {
                 BookId = bookId,
@@ -58,20 +54,6 @@ namespace AspNetCoreApplication.Repositories
             dataContext.Remove(entry);
 
             await dataContext.SaveChangesAsync();
-        }
-
-        public async Task CheckRole(int bookId)
-        {
-            var currentUser = authenticationService.CurrentUser;
-            var bookDetail = await bookRepository.GetByIdOrThrow(bookId);
-
-            if (currentUser.Role == Role.Admin) return;
-            if (currentUser.Role == Role.Manager) return;
-
-            if (bookDetail.AuthorId != currentUser.Id)
-            {
-                throw new UnauthorizedException("Bạn không có quyền hạn thay đổi sách này.");
-            }
         }
     }
 }
