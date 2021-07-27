@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspNetCoreApplication.Controller
 {
@@ -34,12 +35,15 @@ namespace AspNetCoreApplication.Controller
         [HttpGet("{id}")]
         public async Task<CategoryDetail> Get(int id) => await categoryRepository.Get<CategoryDetail>(id);
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task Add([FromBody] CategoryForm categoryForm) => await categoryRepository.Create(categoryForm);
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] CategoryForm categoryForm) => await categoryRepository.Update(id, categoryForm);
-        
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task DeleteCategory(int id) => await categoryBookRepository.Delete(id);
         
