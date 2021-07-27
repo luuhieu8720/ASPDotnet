@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Repositories
 {
-    public class BookCategoryRepository : IBookCategoryRepository
+    public class BookCategoryRepository : Repository<Book>, IBookCategoryRepository
     {
         private readonly DataContext dataContext;
 
         private readonly IAuthenticationService authenticationService;
 
-        public BookCategoryRepository(DataContext dataContext, IAuthenticationService authenticationService)
+        public BookCategoryRepository(DataContext dataContext, IAuthenticationService authenticationService) : base(dataContext)
         {
             this.dataContext = dataContext;
             this.authenticationService = authenticationService;
@@ -25,7 +25,7 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Add(int bookId, int categoryId)
         {
-            CheckRoleAdmin();
+            await CheckRole(bookId);
             var bookCategory = new BookCategory
             {
                 BookId = bookId,
@@ -46,7 +46,7 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Delete(int bookId, int categoryId)
         {
-            CheckRoleAdmin();
+            await CheckRole(bookId);
             var entry = await dataContext.BookCategories.FirstOrDefaultAsync(x => x.BookId == bookId && x.CategoryId == categoryId) ??
                             throw new NotFoundException("BookCategory can't be found");
 
@@ -55,10 +55,14 @@ namespace AspNetCoreApplication.Repositories
             await dataContext.SaveChangesAsync();
         }
 
-        public void CheckRoleAdmin()
+        public async Task CheckRole(int id)
         {
             var currentUser = authenticationService.CurrentUser;
-            if (currentUser.Role != Role.Admin)
+            var bookDetail = await base.GetByIdOrThrow(id);
+
+            var listRole = new Role[2] { Role.Admin, Role.Manager };
+            if (!listRole.Contains(currentUser.Role)
+                && bookDetail.AuthorId != currentUser.Id)
             {
                 throw new UnauthorizedException("Không có quyền truy cập");
             }
