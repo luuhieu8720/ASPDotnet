@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
 using System.Threading.Tasks;
 using AspNetCoreApplication.Exceptions;
 using System.IO;
@@ -18,6 +16,8 @@ using System.Text.RegularExpressions;
 using System.Drawing.Imaging;
 using AspNetCoreApplication.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using AspNetCoreApplication.DTO.DTOuser;
 
 namespace AspNetCoreApplication.Repositories
 {
@@ -25,12 +25,17 @@ namespace AspNetCoreApplication.Repositories
     {
         private readonly ICloudinaryService cloudService;
 
+        private readonly IAuthenticationService authenticationService;
+
         private readonly DataContext dataContext;
 
-        public BookRepository(DataContext dataContext, ICloudinaryService cloudService) : base(dataContext)
+        public BookRepository(DataContext dataContext,
+            ICloudinaryService cloudService,
+            IAuthenticationService authenticationService) : base(dataContext)
         {
             this.cloudService = cloudService;
             this.dataContext = dataContext;
+            this.authenticationService = authenticationService;
         }
 
         public async Task Create(BookForm source)
@@ -41,6 +46,8 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Update(int id, BookForm source)
         {
+            await CheckRole(id);
+
             source.Cover = await CheckForUploading(source.Cover);
 
             await base.Update(id, source);
@@ -73,7 +80,7 @@ namespace AspNetCoreApplication.Repositories
 
             var dataUpload = resizedImage.ImageToByteArray();
 
-            var uploadResult = await cloudService.UploadImage(imageName,dataUpload);
+            var uploadResult = await cloudService.UploadImage(imageName, dataUpload);
 
             return uploadResult;
         }
@@ -84,6 +91,26 @@ namespace AspNetCoreApplication.Repositories
                 .Where(x => x.Id == bookId)
                 .SelectMany(x => x.Categories.Select(y => y.Category))
                 .ToListAsync();
+        }
+
+        public override async Task Delete(int id)
+        {
+            await CheckRole(id);
+            await base.Delete(id);
+        }
+
+        public async Task CheckRole(int id)
+        {
+            var currentUser = authenticationService.CurrentUser;
+            var bookDetail = await base.GetByIdOrThrow(id);
+
+            if (currentUser.Role == Role.Admin) return;
+            if (currentUser.Role == Role.Manager) return;
+
+            if (bookDetail.AuthorId != currentUser.Id)
+            {
+                throw new UnauthorizedException("Bạn không có quyền hạn thay đổi sách này.");
+            }
         }
 
     }
