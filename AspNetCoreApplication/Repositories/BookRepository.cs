@@ -29,8 +29,8 @@ namespace AspNetCoreApplication.Repositories
 
         private readonly DataContext dataContext;
 
-        public BookRepository(DataContext dataContext, 
-            ICloudinaryService cloudService, 
+        public BookRepository(DataContext dataContext,
+            ICloudinaryService cloudService,
             IAuthenticationService authenticationService) : base(dataContext)
         {
             this.cloudService = cloudService;
@@ -47,13 +47,8 @@ namespace AspNetCoreApplication.Repositories
         public async Task Update(int id, BookForm source)
         {
             var currentUser = authenticationService.CurrentUser;
-            var bookDetail = base.GetByIdOrThrow(id);
-            if (currentUser.Role != "Admin".ToEnum<Role>()
-                || (currentUser.Role != "Manager".ToEnum<Role>())
-                && bookDetail.GetAwaiter().GetResult().AuthorId != currentUser.Id)
-            {
-                throw new UnauthorizedException("Không có quyền truy cập");
-            }
+            var bookDetail = await base.GetByIdOrThrow(id);
+            CheckRole(currentUser, bookDetail);
 
             source.Cover = await CheckForUploading(source.Cover);
 
@@ -87,7 +82,7 @@ namespace AspNetCoreApplication.Repositories
 
             var dataUpload = resizedImage.ImageToByteArray();
 
-            var uploadResult = await cloudService.UploadImage(imageName,dataUpload);
+            var uploadResult = await cloudService.UploadImage(imageName, dataUpload);
 
             return uploadResult;
         }
@@ -100,17 +95,22 @@ namespace AspNetCoreApplication.Repositories
                 .ToListAsync();
         }
 
-        public new async Task Delete(int id)
+        public override async Task Delete(int id)
         {
             var currentUser = authenticationService.CurrentUser;
-            var bookDetail = base.GetByIdOrThrow(id);
-            if ((!currentUser.Role.ToString().Equals("Admin"))
-                || (!currentUser.Role.ToString().Equals("Manager"))
-                && bookDetail.GetAwaiter().GetResult().AuthorId != currentUser.Id)
+            var bookDetail = await base.GetByIdOrThrow(id);
+            CheckRole(currentUser, bookDetail);
+            await base.Delete(id);
+        }
+
+        public void CheckRole(AuthenUser currentUser, Book book)
+        {
+            if (currentUser.Role != Role.Admin
+                || currentUser.Role != Role.Manager
+                && book.AuthorId != currentUser.Id)
             {
                 throw new UnauthorizedException("Không có quyền truy cập");
             }
-            await base.Delete(id);
         }
 
     }
