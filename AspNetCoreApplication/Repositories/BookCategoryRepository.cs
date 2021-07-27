@@ -11,16 +11,21 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreApplication.Repositories
 {
-    public class BookCategoryRepository : Repository<Book>, IBookCategoryRepository
+    public class BookCategoryRepository : IBookCategoryRepository
     {
         private readonly DataContext dataContext;
 
         private readonly IAuthenticationService authenticationService;
 
-        public BookCategoryRepository(DataContext dataContext, IAuthenticationService authenticationService) : base(dataContext)
+        private readonly IBookRepository bookRepository;
+
+        public BookCategoryRepository(DataContext dataContext, 
+            IAuthenticationService authenticationService,
+            IBookRepository bookRepository)
         {
             this.dataContext = dataContext;
             this.authenticationService = authenticationService;
+            this.bookRepository = bookRepository;
         }
 
         public async Task Add(int bookId, int categoryId)
@@ -46,7 +51,7 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Delete(int bookId, int categoryId)
         {
-            await CheckRole(bookId);
+            await bookRepository.CheckRole(bookId);
             var entry = await dataContext.BookCategories.FirstOrDefaultAsync(x => x.BookId == bookId && x.CategoryId == categoryId) ??
                             throw new NotFoundException("BookCategory can't be found");
 
@@ -55,16 +60,17 @@ namespace AspNetCoreApplication.Repositories
             await dataContext.SaveChangesAsync();
         }
 
-        public async Task CheckRole(int id)
+        public async Task CheckRole(int bookId)
         {
             var currentUser = authenticationService.CurrentUser;
-            var bookDetail = await base.GetByIdOrThrow(id);
+            var bookDetail = await bookRepository.GetByIdOrThrow(bookId);
 
-            var listRole = new Role[2] { Role.Admin, Role.Manager };
-            if (!listRole.Contains(currentUser.Role)
-                && bookDetail.AuthorId != currentUser.Id)
+            if (currentUser.Role == Role.Admin) return;
+            if (currentUser.Role == Role.Manager) return;
+
+            if (bookDetail.AuthorId != currentUser.Id)
             {
-                throw new UnauthorizedException("Không có quyền truy cập");
+                throw new UnauthorizedException("Bạn không có quyền hạn thay đổi sách này.");
             }
         }
     }

@@ -104,11 +104,12 @@ namespace AspNetCoreApplication.Repositories
             var currentUser = authenticationService.CurrentUser;
             var bookDetail = await base.GetByIdOrThrow(id);
 
-            var listRole = new Role[2] { Role.Admin, Role.Manager };
-            if (!listRole.Contains(currentUser.Role)
-                && bookDetail.AuthorId != currentUser.Id)
+            if (currentUser.Role == Role.Admin) return;
+            if (currentUser.Role == Role.Manager) return;
+
+            if (bookDetail.AuthorId != currentUser.Id)
             {
-                throw new UnauthorizedException("Không có quyền truy cập");
+                throw new UnauthorizedException("Bạn không có quyền hạn thay đổi sách này.");
             }
         }
 
