@@ -45,12 +45,12 @@ namespace AspNetCoreApplication.Controller
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] BookForm bookForm) => await bookRepository.Update(id, bookForm);
         
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpPost("{id}/categories/{categoryId}")]
         public async Task AddCategory(int id, int categoryId)
             => await bookCategoryRepository.Add(id, categoryId);
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpDelete("{id}/categories/{categoryId}")]
         public async Task Delete(int id, int categoryId) => await bookCategoryRepository.Delete(id, categoryId);
         

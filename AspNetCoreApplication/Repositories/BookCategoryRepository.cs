@@ -1,5 +1,7 @@
-﻿using AspNetCoreApplication.Exceptions;
+﻿using AspNetCoreApplication.DTO.DTOuser;
+using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Models;
+using AspNetCoreApplication.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,13 +15,17 @@ namespace AspNetCoreApplication.Repositories
     {
         private readonly DataContext dataContext;
 
-        public BookCategoryRepository(DataContext dataContext)
+        private readonly IAuthenticationService authenticationService;
+
+        public BookCategoryRepository(DataContext dataContext, IAuthenticationService authenticationService)
         {
             this.dataContext = dataContext;
+            this.authenticationService = authenticationService;
         }
 
         public async Task Add(int bookId, int categoryId)
         {
+            CheckRoleAdmin();
             var bookCategory = new BookCategory
             {
                 BookId = bookId,
@@ -40,6 +46,7 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Delete(int bookId, int categoryId)
         {
+            CheckRoleAdmin();
             var entry = await dataContext.BookCategories.FirstOrDefaultAsync(x => x.BookId == bookId && x.CategoryId == categoryId) ??
                             throw new NotFoundException("BookCategory can't be found");
 
@@ -48,5 +55,13 @@ namespace AspNetCoreApplication.Repositories
             await dataContext.SaveChangesAsync();
         }
 
+        public void CheckRoleAdmin()
+        {
+            var currentUser = authenticationService.CurrentUser;
+            if (currentUser.Role != Role.Admin)
+            {
+                throw new UnauthorizedException("Không có quyền truy cập");
+            }
+        }
     }
 }

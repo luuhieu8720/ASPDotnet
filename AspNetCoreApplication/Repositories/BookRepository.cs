@@ -46,9 +46,7 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Update(int id, BookForm source)
         {
-            var currentUser = authenticationService.CurrentUser;
-            var bookDetail = await base.GetByIdOrThrow(id);
-            CheckRole(currentUser, bookDetail);
+            await CheckRole(id);
 
             source.Cover = await CheckForUploading(source.Cover);
 
@@ -97,17 +95,18 @@ namespace AspNetCoreApplication.Repositories
 
         public override async Task Delete(int id)
         {
-            var currentUser = authenticationService.CurrentUser;
-            var bookDetail = await base.GetByIdOrThrow(id);
-            CheckRole(currentUser, bookDetail);
+            await CheckRole(id);
             await base.Delete(id);
         }
 
-        public void CheckRole(AuthenUser currentUser, Book book)
+        public async Task CheckRole(int id)
         {
-            if (currentUser.Role != Role.Admin
-                || currentUser.Role != Role.Manager
-                && book.AuthorId != currentUser.Id)
+            var currentUser = authenticationService.CurrentUser;
+            var bookDetail = await base.GetByIdOrThrow(id);
+
+            var listRole = new Role[2] { Role.Admin, Role.Manager };
+            if (!listRole.Contains(currentUser.Role)
+                && bookDetail.AuthorId != currentUser.Id)
             {
                 throw new UnauthorizedException("Không có quyền truy cập");
             }
