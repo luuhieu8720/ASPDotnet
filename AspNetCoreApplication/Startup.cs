@@ -62,6 +62,7 @@ namespace AspNetCoreApplication
             var tokenConfig = ConfigType<TokenConfig>(services);
 
             services.ConfigSecurity(tokenConfig);
+            log4net.Config.XmlConfigurator.Configure();
         }
 
         private T ConfigType<T>(IServiceCollection services)
@@ -76,6 +77,7 @@ namespace AspNetCoreApplication
         {
             options.Filters.Add<HandleExceptionHandling>();
             options.Filters.Add<ValidateModelHandling>();
+            options.Filters.Add<LogFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
