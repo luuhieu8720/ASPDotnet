@@ -1,5 +1,7 @@
-﻿using AspNetCoreApplication.Exceptions;
+﻿using AspNetCoreApplication.DTO.DTOuser;
+using AspNetCoreApplication.Exceptions;
 using AspNetCoreApplication.Models;
+using AspNetCoreApplication.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,13 +15,18 @@ namespace AspNetCoreApplication.Repositories
     {
         private readonly DataContext dataContext;
 
-        public BookCategoryRepository(DataContext dataContext)
+        private readonly IBookRepository bookRepository;
+
+        public BookCategoryRepository(DataContext dataContext, 
+            IBookRepository bookRepository)
         {
             this.dataContext = dataContext;
+            this.bookRepository = bookRepository;
         }
 
         public async Task Add(int bookId, int categoryId)
         {
+            await bookRepository.CheckRole(bookId);
             var bookCategory = new BookCategory
             {
                 BookId = bookId,
@@ -40,6 +47,7 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task Delete(int bookId, int categoryId)
         {
+            await bookRepository.CheckRole(bookId);
             var entry = await dataContext.BookCategories.FirstOrDefaultAsync(x => x.BookId == bookId && x.CategoryId == categoryId) ??
                             throw new NotFoundException("BookCategory can't be found");
 
@@ -47,6 +55,5 @@ namespace AspNetCoreApplication.Repositories
 
             await dataContext.SaveChangesAsync();
         }
-
     }
 }

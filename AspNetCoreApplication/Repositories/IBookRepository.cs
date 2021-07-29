@@ -14,5 +14,7 @@ namespace AspNetCoreApplication.Repositories
         Task Update(int id, BookForm source);
 
         Task<List<Category>> GetCategories(int bookId);
+
+        Task CheckRole(int id);
     }
 }
