@@ -28,8 +28,9 @@ namespace AspNetCoreApplication.Services
             options.SaveToken = true;
         }
 
-        public static void ConfigSecurity(this IServiceCollection services, TokenConfig tokenConfig)
+        public static void ConfigSecurity(this IServiceCollection services)
         {
+            var tokenConfig = services.BuildServiceProvider().GetService<TokenConfig>();
             var key = Encoding.ASCII.GetBytes(tokenConfig.Key);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => SetJwtOption(options, key));

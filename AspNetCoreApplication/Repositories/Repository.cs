@@ -25,7 +25,7 @@ namespace AspNetCoreApplication.Repositories
             await dataContext.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public virtual async Task Delete(int id)
         {
             var entry = await GetByIdOrThrow(id);
 

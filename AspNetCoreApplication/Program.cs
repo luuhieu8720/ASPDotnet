@@ -4,7 +4,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace AspNetCoreApplication
@@ -16,11 +18,24 @@ namespace AspNetCoreApplication
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            var portConfig = Environment.GetEnvironmentVariable("PORT");
+
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+                    .ConfigureKestrel(serverOptions =>
+                    {
+                        if (!string.IsNullOrEmpty(portConfig))
+                        {
+                            serverOptions.Listen(IPAddress.Any, Convert.ToInt32(portConfig));
+                        }
+                    })
+                    .UseStartup<Startup>();
                 });
+        }
+            
     }
 }

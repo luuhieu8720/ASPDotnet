@@ -100,13 +100,14 @@ namespace AspNetCoreApplication.Repositories
                 .ToListAsync();
         }
 
-        public new async Task Delete(int id)
+        public override async Task Delete(int id)
         {
             var currentUser = authenticationService.CurrentUser;
-            var bookDetail = base.GetByIdOrThrow(id);
+            var bookDetail = await GetByIdOrThrow(id);
+
             if ((!currentUser.Role.ToString().Equals("Admin"))
                 || (!currentUser.Role.ToString().Equals("Manager"))
-                && bookDetail.GetAwaiter().GetResult().AuthorId != currentUser.Id)
+                && bookDetail.AuthorId != currentUser.Id)
             {
                 throw new UnauthorizedException("Không có quyền truy cập");
             }

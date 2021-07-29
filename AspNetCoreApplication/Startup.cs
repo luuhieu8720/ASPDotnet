@@ -1,4 +1,5 @@
 using AspNetCoreApplication.Config;
+using AspNetCoreApplication.Extensions;
 using AspNetCoreApplication.Handlings;
 using AspNetCoreApplication.Models;
 using AspNetCoreApplication.Repositories;
@@ -36,17 +37,20 @@ namespace AspNetCoreApplication
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(
-                options => options.UseSqlServer("name=ConnectionStrings:Connection")
-            );
+            services.ConfigType<ImageConfig>(Configuration);
+            services.ConfigType<PostgresConfig>(Configuration);
+            services.ConfigType<TokenConfig>(Configuration);
+
+            services
+                .AddDbContext<DataContext>(options => PostgresDatabaseConnection.ConfigPosgressDb(services, options));
+
             services.AddControllers();
-            services.AddMvc(ConfigMvc);
+            services.AddHealthChecks();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "AspNetCoreApplication", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookStoreAPI", Version = "v1" });
             });
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IBookRepository, BookRepository>();
@@ -55,22 +59,20 @@ namespace AspNetCoreApplication
             services.AddScoped<ICloudinaryService, CloudinaryCloudService>();
             services.AddScoped<Services.IAuthenticationService, Services.AuthenticationService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddHttpContextAccessor();
+
             services.AddMvc(ConfigMvc);
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.ConfigSecurity();
 
-            ConfigType<ImageConfig>(services);
-            var tokenConfig = ConfigType<TokenConfig>(services);
-
-            services.ConfigSecurity(tokenConfig);
+#pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+            services.BuildServiceProvider()
+#pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+                .GetService<DataContext>()
+                .Database
+                .Migrate();
         }
 
-        private T ConfigType<T>(IServiceCollection services)
-        {
-            var configObject = Activator.CreateInstance<T>();
-            Configuration.Bind(typeof(T).Name, configObject);
-            services.AddSingleton(typeof(T), configObject);
-            return configObject;
-        }
+        
 
         private void ConfigMvc(MvcOptions options)
         {
@@ -84,14 +86,16 @@ namespace AspNetCoreApplication
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AspNetCoreApplication v1"));
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookStore"));
+
             app.UseHttpsRedirection();
-
+            app.UseHealthChecks("/health");
             app.UseRouting();
-
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseMiddleware<TokenProviderMiddleware>();
 
             app.UseAuthorization();
