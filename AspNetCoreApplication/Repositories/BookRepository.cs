@@ -113,5 +113,20 @@ namespace AspNetCoreApplication.Repositories
             }
         }
 
+        public async Task<List<BookDedicated>> Get()
+        {
+            var listBooks = await base.Get<BookDedicated>();
+            foreach(var item in listBooks)
+            {
+                item.Categories = await GetCategories(item.Id);
+            }
+            return listBooks;
+        }
+        public async Task<BookDedicated> Get(int id)
+        {
+            var book = await base.Get<BookDedicated>(id);
+            book.Categories = await GetCategories(book.Id);
+            return book.ConvertTo<BookDedicated>();
+        }
     }
 }

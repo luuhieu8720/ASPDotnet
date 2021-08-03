@@ -32,9 +32,8 @@ namespace AspNetCoreApplication.Services
             cfg.CreateMap<UserForm, User> ();
             cfg.CreateMap<User, UserDetail>();
             cfg.CreateMap<User, UserItem>();
-            cfg.CreateMap<Book, BookItem>();
             cfg.CreateMap<BookForm, Book>();
-            cfg.CreateMap<Book, BookDetail>();
+            cfg.CreateMap<Book, BookDedicated>();
         }
 
         public static T ConvertTo<T>(this object source)

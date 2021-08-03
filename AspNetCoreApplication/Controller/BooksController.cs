@@ -28,10 +28,10 @@ namespace AspNetCoreApplication.Controller
         }
 
         [HttpGet]
-        public async Task<List<BookItem>> Get() => await bookRepository.Get<BookItem>();
+        public async Task<List<BookDedicated>> Get() => await bookRepository.Get();
 
         [HttpGet("{id}")]
-        public async Task<BookDetail> Get(int id) => await bookRepository.Get<BookDetail>(id);
+        public async Task<BookDedicated> Get(int id) => await bookRepository.Get(id);
 
         [Authorize]
         [HttpPost]
