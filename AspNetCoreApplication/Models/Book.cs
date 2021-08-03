@@ -24,8 +24,9 @@ namespace AspNetCoreApplication.Models
 
         public string Cover { get; set; }
 
-        [ForeignKey(nameof(UserId))]
         public int UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
 
         public User User { get; set; }
 
