@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AspNetCoreApplication.Config;
+using AspNetCoreApplication.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -15,10 +17,13 @@ namespace AspNetCoreApplication
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
+
+            var postgressConfig = configuration.CreateConfig<PostgresConfig>();
+
             var sqlConnection = configuration.GetValue<string>("ConnectionStrings:Connection");
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
 
-            optionsBuilder.UseSqlServer(sqlConnection);
+            optionsBuilder.UseNpgsql(postgressConfig.BuildConnectionString());
             return new DataContext(optionsBuilder.Options);
         }
     }
