@@ -26,6 +26,10 @@ namespace AspNetCoreApplication.DTO.DTOBook
 
         public Author Author { get; set; }
 
+        public int UserId { get; set; }
+
+        public User User { get; set; }
+
         public string Cover { get; set; }
 
         public List<BookCategory> Categories { get; set; }
