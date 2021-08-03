@@ -1,0 +1,16 @@
+@echo OFF
+
+echo BUILD.........................
+docker build -t registry.heroku.com/hbookstore/web .
+
+echo PUSH..........................
+call heroku container:push web
+
+echo RELEASE.......................
+call heroku container:release web
+
+
+echo OPEN..........................
+call heroku open
+
+echo DONE..........................
