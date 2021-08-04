@@ -10,7 +10,7 @@ namespace AspNetCoreApplication.Services
 {
     public interface IAuthenticationService
     {
-        Task<TokenResponse> Login(string username, string password);
+        Task<TokenResponse> Login(LoginForm loginForm);
 
         AuthenUser CurrentUser { get; }
 
