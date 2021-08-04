@@ -6,7 +6,7 @@ using AspNetCoreApplication.Models;
 
 namespace AspNetCoreApplication.DTO.DTOBook
 {
-    public class BookDedicated
+    public class BookDetail
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,12 +14,10 @@ namespace AspNetCoreApplication.DTO.DTOBook
         public double Price { get; set; }
         public int Year { get; set; }
         public int AuthorId { get; set; }
+        public Author Author { get; set; }
         public string Cover { get; set; }
-
-        public List<Category> Categories { get; set; }
-
+        public List<BookCategory> Categories { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
-
     }
 }
