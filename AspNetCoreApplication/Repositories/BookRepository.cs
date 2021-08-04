@@ -116,12 +116,12 @@ namespace AspNetCoreApplication.Repositories
 
         public async Task<List<BookItem>> Get()
         {
-            var listBooks = await base.Get<BookItem>();
-            foreach(var item in listBooks)
+            var books = await base.Get<BookItem>();
+            foreach(var item in books)
             {
                 item.Categories = await GetCategories(item.Id);
             }
-            return listBooks;
+            return books;
         }
 
         public async Task<BookDetail> Get(int id)
