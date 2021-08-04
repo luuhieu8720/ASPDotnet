@@ -18,6 +18,7 @@ using AspNetCoreApplication.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using AspNetCoreApplication.DTO.DTOuser;
+using AspNetCoreApplication.DTO.DTOUser;
 
 namespace AspNetCoreApplication.Repositories
 {
@@ -113,20 +114,21 @@ namespace AspNetCoreApplication.Repositories
             }
         }
 
-        public async Task<List<BookDedicated>> Get()
+        public async Task<List<BookItem>> Get()
         {
-            var listBooks = await base.Get<BookDedicated>();
+            var listBooks = await base.Get<BookItem>();
             foreach(var item in listBooks)
             {
                 item.Categories = await GetCategories(item.Id);
             }
             return listBooks;
         }
-        public async Task<BookDedicated> Get(int id)
+
+        public async Task<BookDetail> Get(int id)
         {
-            var book = await base.Get<BookDedicated>(id);
+            var book = await base.Get<BookDetail>(id);
             book.Categories = await GetCategories(book.Id);
-            return book.ConvertTo<BookDedicated>();
+            return book.ConvertTo<BookDetail>();
         }
     }
 }

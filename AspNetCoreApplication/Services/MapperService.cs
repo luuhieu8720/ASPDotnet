@@ -20,7 +20,7 @@ namespace AspNetCoreApplication.Services
     {
         private static readonly MapperConfiguration config = new(CreateMap);
         private static readonly IMapper mapper = config.CreateMapper();
-       
+
         private static void CreateMap(IMapperConfigurationExpression cfg)
         {
             cfg.CreateMap<AuthorForm, Author>();
@@ -29,16 +29,17 @@ namespace AspNetCoreApplication.Services
             cfg.CreateMap<CategoryForm, Category>();
             cfg.CreateMap<Category, CategoryDetail>();
             cfg.CreateMap<Category, CategoryItem>();
-            cfg.CreateMap<UserForm, User> ();
+            cfg.CreateMap<UserForm, User>();
             cfg.CreateMap<User, UserDetail>();
             cfg.CreateMap<User, UserItem>();
+            cfg.CreateMap<Book, BookItem>();
             cfg.CreateMap<BookForm, Book>();
-            cfg.CreateMap<Book, BookDedicated>();
+            cfg.CreateMap<Book, BookDetail>();
         }
 
         public static T ConvertTo<T>(this object source)
         {
-            if(source == null)
+            if (source == null)
             {
                 throw new NullReferenceException();
             }

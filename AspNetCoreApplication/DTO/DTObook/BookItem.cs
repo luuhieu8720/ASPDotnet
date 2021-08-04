@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreApplication.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreApplication.DTO.DTOBook
 {
@@ -21,14 +20,10 @@ namespace AspNetCoreApplication.DTO.DTOBook
 
         public int AuthorId { get; set; }
 
-        public Author Author { get; set; }
-
-        public int UserId { get; set; }
-
-        public User User { get; set; }
-
         public string Cover { get; set; }
 
-        public List<BookCategory> Categories { get; set; }
+        public List<Category> Categories { get; set; }
+
+        public int UserId { get; set; }
     }
 }
