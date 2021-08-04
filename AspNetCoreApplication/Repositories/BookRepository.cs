@@ -107,7 +107,7 @@ namespace AspNetCoreApplication.Repositories
             if (currentUser.Role == Role.Admin) return;
             if (currentUser.Role == Role.Manager) return;
 
-            if (bookDetail.AuthorId != currentUser.Id)
+            if (bookDetail.UserId != currentUser.Id)
             {
                 throw new UnauthorizedException("Bạn không có quyền hạn thay đổi sách này.");
             }
