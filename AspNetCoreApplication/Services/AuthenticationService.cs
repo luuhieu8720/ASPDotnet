@@ -38,10 +38,10 @@ namespace AspNetCoreApplication.Services
 
         public int CurrentUserId => CurrentUser.Id;
 
-        public async Task<TokenResponse> Login(string username, string password)
+        public async Task<TokenResponse> Login(LoginForm loginForm)
         {
             var user = await dataContext.Users
-                            .FirstOrDefaultAsync(x => x.Username == username && x.Password == password.Encrypt())
+                            .FirstOrDefaultAsync(x => x.Username == loginForm.Username && x.Password == loginForm.Password.Encrypt())
                            ?? throw new BadRequestException("Sai tên đăng nhập hoặc mật khẩu");
 
             var claims = new AuthenUser(user).GetClaims();

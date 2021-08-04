@@ -24,7 +24,7 @@ namespace AspNetCoreApplication.Controller
         }
 
         [HttpPost]
-        public async Task<TokenResponse> Post(string username, string password) => await authenticationService.Login(username, password);
+        public async Task<TokenResponse> Post([FromBody] LoginForm loginForm) => await authenticationService.Login(loginForm);
 
         [HttpGet]
         [Authorize]
