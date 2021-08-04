@@ -12,7 +12,7 @@ namespace AspNetCoreApplication.Configure
         {
             typeof(HandleExceptionHandling),
             typeof(ValidateModelHandling),
-            typeof(LogFilter)
+            typeof(LoggerHandling)
         };
 
         public static void ConfigFilters(this MvcOptions options)
