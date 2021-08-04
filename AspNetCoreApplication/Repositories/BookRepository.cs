@@ -17,7 +17,6 @@ using System.Drawing.Imaging;
 using AspNetCoreApplication.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
-using AspNetCoreApplication.DTO.DTOuser;
 using AspNetCoreApplication.DTO.DTOUser;
 
 namespace AspNetCoreApplication.Repositories
