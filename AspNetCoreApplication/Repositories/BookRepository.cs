@@ -18,6 +18,7 @@ using AspNetCoreApplication.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using AspNetCoreApplication.DTO.DTOUser;
+using AspNetCoreApplication.DTO.DTOCategory;
 
 namespace AspNetCoreApplication.Repositories
 {
@@ -89,7 +90,7 @@ namespace AspNetCoreApplication.Repositories
         {
             return await dataContext.Books
                 .Where(x => x.Id == bookId)
-                .SelectMany(x => x.Categories.Select(y => y.Category))
+                .SelectMany(x => x.Categories.Select(y => y.Category.ConvertTo<Category>()))
                 .ToListAsync();
         }
 
@@ -113,21 +114,5 @@ namespace AspNetCoreApplication.Repositories
             }
         }
 
-        public async Task<List<BookItem>> Get()
-        {
-            var books = await base.Get<BookItem>();
-            foreach(var item in books)
-            {
-                item.Categories = await GetCategories(item.Id);
-            }
-            return books;
-        }
-
-        public async Task<BookDetail> Get(int id)
-        {
-            var book = await base.Get<BookDetail>(id);
-            book.Categories = await GetCategories(book.Id);
-            return book.ConvertTo<BookDetail>();
-        }
     }
 }

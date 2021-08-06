@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCoreApplication.DTO.DTOCategory;
 
 namespace AspNetCoreApplication.Controller
 {
@@ -28,10 +29,10 @@ namespace AspNetCoreApplication.Controller
         }
 
         [HttpGet]
-        public async Task<List<BookItem>> Get() => await bookRepository.Get();
+        public async Task<List<BookItem>> Get() => await bookRepository.Get<BookItem>();
 
-        [HttpGet("{id}")]
-        public async Task<BookDetail> Get(int id) => await bookRepository.Get(id);
+       [HttpGet("{id}")]
+        public async Task<BookDetail> Get(int id) => await bookRepository.Get<BookDetail>(id);
 
         [Authorize]
         [HttpPost]

@@ -32,9 +32,17 @@ namespace AspNetCoreApplication.Services
             cfg.CreateMap<UserForm, User>();
             cfg.CreateMap<User, UserDetail>();
             cfg.CreateMap<User, UserItem>();
-            cfg.CreateMap<Book, BookItem>();
             cfg.CreateMap<BookForm, Book>();
-            cfg.CreateMap<Book, BookDetail>();
+            cfg.CreateMap<Book, BookDetail>()
+                .ForMember(bookDetail => bookDetail.Categories,
+                option => option.MapFrom(book => book.Categories
+                                                .Select(x => x.Category
+                                                .ConvertTo<CategoryDetail>()))); ;
+            cfg.CreateMap<Book, BookItem>()
+                .ForMember(bookItem => bookItem.Categories,
+                option => option.MapFrom(book => book.Categories
+                                                .Select(x => x.Category
+                                                .ConvertTo<CategoryItem>())));
         }
 
         public static T ConvertTo<T>(this object source)
