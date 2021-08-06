@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using AspNetCoreApplication.DTO.DTOUser;
 using AspNetCoreApplication.DTO.DTOCategory;
+using AspNetCoreApplication.Config;
 
 namespace AspNetCoreApplication.Repositories
 {
@@ -26,17 +27,21 @@ namespace AspNetCoreApplication.Repositories
     {
         private readonly ICloudinaryService cloudService;
 
+        private readonly ImageConfig imageConfig;
+
         private readonly IAuthenticationService authenticationService;
 
         private readonly DataContext dataContext;
 
         public BookRepository(DataContext dataContext,
             ICloudinaryService cloudService,
+            ImageConfig imageConfig,
             IAuthenticationService authenticationService) : base(dataContext)
         {
             this.cloudService = cloudService;
             this.dataContext = dataContext;
             this.authenticationService = authenticationService;
+            this.imageConfig = imageConfig;
         }
 
         public async Task Create(BookForm source)
@@ -77,7 +82,7 @@ namespace AspNetCoreApplication.Repositories
             using var memoryStream = new MemoryStream(fileData);
             var img = Image.FromStream(memoryStream);
 
-            var resizedImage = img.EnsureImageSizeLimit();
+            var resizedImage = EnsureImageSizeLimit(img);
 
             var dataUpload = resizedImage.ImageToByteArray();
 
@@ -85,6 +90,25 @@ namespace AspNetCoreApplication.Repositories
 
             return uploadResult;
         }
+
+        private Image EnsureImageSizeLimit(Image image)
+        {
+            var heightLimit = imageConfig.CoverLimitWidth;
+            var widthLimit = imageConfig.CoverLimitHeight;
+
+            if (image.Width < widthLimit && image.Height < heightLimit)
+            {
+                return image;
+            }
+
+            var scaleWidth = image.Width * 1.0 / widthLimit;
+            var scaleHeight = image.Height * 1.0 / heightLimit;
+
+            var scale = Math.Max(scaleWidth, scaleHeight);
+
+            return new Bitmap(image, (int)(image.Width / scale), (int)(image.Height / scale));
+        }
+
 
         public async Task<List<Category>> GetCategories(int bookId)
         {
