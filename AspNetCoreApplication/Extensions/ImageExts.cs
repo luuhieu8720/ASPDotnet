@@ -19,5 +19,19 @@ namespace AspNetCoreApplication.Extensions
                 return ms.ToArray();
             }
         }
+        public static Image EnsureLimitSize(this Image image, int heightLimit, int widthLimit)
+        {
+            if (image.Width < widthLimit && image.Height < heightLimit)
+            {
+                return image;
+            }
+
+            var scaleWidth = image.Width * 1.0 / widthLimit;
+            var scaleHeight = image.Height * 1.0 / heightLimit;
+
+            var scale = Math.Max(scaleWidth, scaleHeight);
+
+            return new Bitmap(image, (int)(image.Width / scale), (int)(image.Height / scale));
+        }
     }
 }

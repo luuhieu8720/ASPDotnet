@@ -82,7 +82,7 @@ namespace AspNetCoreApplication.Repositories
             using var memoryStream = new MemoryStream(fileData);
             var img = Image.FromStream(memoryStream);
 
-            var resizedImage = EnsureImageSizeLimit(img);
+            var resizedImage = img.EnsureLimitSize(imageConfig.CoverLimitHeight, imageConfig.CoverLimitWidth);
 
             var dataUpload = resizedImage.ImageToByteArray();
 
@@ -90,25 +90,6 @@ namespace AspNetCoreApplication.Repositories
 
             return uploadResult;
         }
-
-        private Image EnsureImageSizeLimit(Image image)
-        {
-            var heightLimit = imageConfig.CoverLimitWidth;
-            var widthLimit = imageConfig.CoverLimitHeight;
-
-            if (image.Width < widthLimit && image.Height < heightLimit)
-            {
-                return image;
-            }
-
-            var scaleWidth = image.Width * 1.0 / widthLimit;
-            var scaleHeight = image.Height * 1.0 / heightLimit;
-
-            var scale = Math.Max(scaleWidth, scaleHeight);
-
-            return new Bitmap(image, (int)(image.Width / scale), (int)(image.Height / scale));
-        }
-
 
         public async Task<List<Category>> GetCategories(int bookId)
         {
