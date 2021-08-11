@@ -105,6 +105,25 @@ namespace AspNetCoreApplication.Repositories
             await base.Delete(id);
         }
 
+        public async Task<List<BookItem>> Get()
+        {
+            return await dataContext
+                        .Set<Book>()
+                        .Include(b => b.Categories).ThenInclude(c => c.Category)
+                        .Select(x => x.ConvertTo<BookItem>())
+                        .ToListAsync();
+        }
+
+        public async Task<BookDetail> Get(int id)
+        {
+            var book = await dataContext
+                        .Set<Book>()
+                        .Include(b => b.Categories).ThenInclude(c => c.Category)
+                        .Where(x => x.Id == id).FirstAsync();
+            return book.ConvertTo<BookDetail>();
+                        
+        }
+
         public async Task CheckRole(int id)
         {
             var currentUser = authenticationService.CurrentUser;

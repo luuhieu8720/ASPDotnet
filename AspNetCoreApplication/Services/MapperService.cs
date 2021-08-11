@@ -29,15 +29,16 @@ namespace AspNetCoreApplication.Services
             cfg.CreateMap<CategoryForm, Category>();
             cfg.CreateMap<Category, CategoryDetail>();
             cfg.CreateMap<Category, CategoryItem>();
+            cfg.CreateMap<CategoryDetail, Category>();
             cfg.CreateMap<UserForm, User>();
             cfg.CreateMap<User, UserDetail>();
             cfg.CreateMap<User, UserItem>();
             cfg.CreateMap<BookForm, Book>();
             cfg.CreateMap<Book, BookDetail>()
-                .ForMember(bookDetail => bookDetail.Categories,
+                .ForMember(bookItem => bookItem.Categories,
                 option => option.MapFrom(book => book.Categories
                                                 .Select(x => x.Category
-                                                .ConvertTo<CategoryDetail>()))); ;
+                                                .ConvertTo<CategoryDetail>())));
             cfg.CreateMap<Book, BookItem>()
                 .ForMember(bookItem => bookItem.Categories,
                 option => option.MapFrom(book => book.Categories
