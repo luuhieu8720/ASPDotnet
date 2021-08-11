@@ -1,4 +1,5 @@
 ﻿using AspNetCoreApplication.Handlings;
+using AspNetCoreApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace AspNetCoreApplication.Configure
         {
             typeof(HandleExceptionHandling),
             typeof(ValidateModelHandling),
+            typeof(LoggerHandling)
         };
 
         public static void ConfigFilters(this MvcOptions options)
