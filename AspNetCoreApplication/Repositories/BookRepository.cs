@@ -17,7 +17,9 @@ using System.Drawing.Imaging;
 using AspNetCoreApplication.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
-using AspNetCoreApplication.DTO.DTOuser;
+using AspNetCoreApplication.DTO.DTOUser;
+using AspNetCoreApplication.DTO.DTOCategory;
+using AspNetCoreApplication.Config;
 
 namespace AspNetCoreApplication.Repositories
 {
@@ -25,17 +27,21 @@ namespace AspNetCoreApplication.Repositories
     {
         private readonly ICloudinaryService cloudService;
 
+        private readonly ImageConfig imageConfig;
+
         private readonly IAuthenticationService authenticationService;
 
         private readonly DataContext dataContext;
 
         public BookRepository(DataContext dataContext,
             ICloudinaryService cloudService,
+            ImageConfig imageConfig,
             IAuthenticationService authenticationService) : base(dataContext)
         {
             this.cloudService = cloudService;
             this.dataContext = dataContext;
             this.authenticationService = authenticationService;
+            this.imageConfig = imageConfig;
         }
 
         public async Task Create(BookForm source)
@@ -76,7 +82,7 @@ namespace AspNetCoreApplication.Repositories
             using var memoryStream = new MemoryStream(fileData);
             var img = Image.FromStream(memoryStream);
 
-            var resizedImage = img.EnsureImageSizeLimit();
+            var resizedImage = img.EnsureLimitSize(imageConfig.CoverLimitHeight, imageConfig.CoverLimitWidth);
 
             var dataUpload = resizedImage.ImageToByteArray();
 
@@ -89,7 +95,7 @@ namespace AspNetCoreApplication.Repositories
         {
             return await dataContext.Books
                 .Where(x => x.Id == bookId)
-                .SelectMany(x => x.Categories.Select(y => y.Category))
+                .SelectMany(x => x.Categories.Select(y => y.Category.ConvertTo<Category>()))
                 .ToListAsync();
         }
 
@@ -97,6 +103,25 @@ namespace AspNetCoreApplication.Repositories
         {
             await CheckRole(id);
             await base.Delete(id);
+        }
+
+        public async Task<List<BookItem>> Get()
+        {
+            return await dataContext
+                        .Set<Book>()
+                        .Include(b => b.Categories).ThenInclude(c => c.Category)
+                        .Select(x => x.ConvertTo<BookItem>())
+                        .ToListAsync();
+        }
+
+        public async Task<BookDetail> Get(int id)
+        {
+            var book = await dataContext
+                        .Set<Book>()
+                        .Include(b => b.Categories).ThenInclude(c => c.Category)
+                        .Where(x => x.Id == id).FirstAsync();
+            return book.ConvertTo<BookDetail>();
+                        
         }
 
         public async Task CheckRole(int id)

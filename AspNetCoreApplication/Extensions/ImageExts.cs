@@ -19,12 +19,8 @@ namespace AspNetCoreApplication.Extensions
                 return ms.ToArray();
             }
         }
-        public static Image EnsureImageSizeLimit(this Image image)
+        public static Image EnsureLimitSize(this Image image, int heightLimit, int widthLimit)
         {
-            var imageConfig = new ImageConfig();
-            var heightLimit = imageConfig.CoverLimitWidth;
-            var widthLimit = imageConfig.CoverLimitHeight;
-
             if (image.Width < widthLimit && image.Height < heightLimit)
             {
                 return image;
