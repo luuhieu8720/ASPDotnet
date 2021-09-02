@@ -43,7 +43,9 @@ namespace AspNetCoreApplication.Services
                 .ForMember(bookItem => bookItem.Categories,
                 option => option.MapFrom(book => book.Categories
                                                 .Select(x => x.Category
-                                                .ConvertTo<CategoryItem>())));
+                                                .ConvertTo<CategoryItem>())))
+                .ForMember(bookItem => bookItem.AuthorName,
+                    option => option.MapFrom(book => book.Author.Name));
         }
 
         public static T ConvertTo<T>(this object source)
