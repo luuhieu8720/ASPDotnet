@@ -25,6 +25,7 @@ namespace AspNetCoreApplication.Configure
                 NamingStrategy = new SnakeCaseNamingStrategy()
             };
             jsonOptions.SerializerSettings.Converters.Add(new StringEnumConverter());
+            jsonOptions.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
         }
     }
 }
