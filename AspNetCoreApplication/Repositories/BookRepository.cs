@@ -110,6 +110,7 @@ namespace AspNetCoreApplication.Repositories
             return await dataContext
                         .Set<Book>()
                         .Include(b => b.Categories).ThenInclude(c => c.Category)
+                        .Include(b => b.Author)
                         .Select(x => x.ConvertTo<BookItem>())
                         .ToListAsync();
         }
