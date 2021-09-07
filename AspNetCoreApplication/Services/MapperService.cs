@@ -38,7 +38,7 @@ namespace AspNetCoreApplication.Services
                 .ForMember(bookItem => bookItem.Categories,
                 option => option.MapFrom(book => book.Categories
                                                 .Select(x => x.Category
-                                                .ConvertTo<CategoryDetail>())));
+                                                .ConvertTo<CategoryItem>())));
             cfg.CreateMap<Book, BookItem>()
                 .ForMember(bookItem => bookItem.Categories,
                 option => option.MapFrom(book => book.Categories
