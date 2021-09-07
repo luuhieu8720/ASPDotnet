@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCoreApplication.DTO.DTOCategory;
 using AspNetCoreApplication.Models;
 
 namespace AspNetCoreApplication.DTO.DTOBook
@@ -22,7 +23,7 @@ namespace AspNetCoreApplication.DTO.DTOBook
 
         public string Cover { get; set; }
 
-        public List<Category> Categories { get; set; }
+        public List<CategoryItem> Categories { get; set; }
 
         public int UserId { get; set; }
     }
